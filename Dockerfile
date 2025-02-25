@@ -2,7 +2,7 @@ FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY target/customfantabe.jar app.jar
+COPY target/app.jar app.jar
 
 EXPOSE 8080
 
