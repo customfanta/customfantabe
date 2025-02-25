@@ -1,8 +1,6 @@
 package it.customfanta.be.repository;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
