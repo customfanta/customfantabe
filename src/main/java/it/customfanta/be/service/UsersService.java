@@ -1,5 +1,6 @@
 package it.customfanta.be.service;
 
+import it.customfanta.be.model.FindUserRequest;
 import it.customfanta.be.model.User;
 import it.customfanta.be.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,10 @@ public class UsersService {
         user.setNome("Antonio");
         user.setProfile("ADMIN");
         usersRepository.save(user);
+    }
+
+    public User findUser(FindUserRequest findUserRequest) {
+        return usersRepository.findByUsernameAndMail(findUserRequest.getUsername(), findUserRequest.getMail()).orElse(null);
     }
 
 }

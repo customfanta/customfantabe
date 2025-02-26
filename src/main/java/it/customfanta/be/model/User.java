@@ -1,9 +1,11 @@
 package it.customfanta.be.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "users")
+@Data
 public class User {
 
     @Id
@@ -12,27 +14,7 @@ public class User {
     private String nome;
     private String profile;
 
-    public String getUsername() {
-        return username;
-    }
+    private String mail;
+    private String password;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getProfile() {
-        return profile;
-    }
-
-    public void setProfile(String profile) {
-        this.profile = profile;
-    }
 }
