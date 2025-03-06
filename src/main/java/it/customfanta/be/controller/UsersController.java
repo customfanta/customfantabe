@@ -43,6 +43,7 @@ public class UsersController {
         if(usersService.checkUserClear(user) != null) {
             return ResponseEntity.badRequest().build();
         }
+        usersService.saveUser(user);
         return ResponseEntity.created(new URI("db")).build();
     }
 }
