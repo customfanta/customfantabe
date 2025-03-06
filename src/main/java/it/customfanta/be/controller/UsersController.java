@@ -64,15 +64,22 @@ public class UsersController {
         return ResponseEntity.ok(null);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/create-admin-user", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Void> createAdminUser(@RequestBody User user) throws URISyntaxException {
-        logger.info("RECEIVED POST /create-admin-user");
-        if(usersService.checkUserClear(user) != null) {
-            return ResponseEntity.badRequest().build();
-        }
-        user.setProfile("ADMIN");
-        user.setPassword(MD5Security.getMD5Pass(user.getPassword()));
-        usersService.saveUser(user);
-        return ResponseEntity.created(new URI("db")).build();
+    @RequestMapping(method = RequestMethod.GET, value = "/delete-user/{username}", produces = { "application/json" })
+    public ResponseEntity<Void> deleteUserById(@PathVariable("username") String username) {
+        logger.info("RECEIVED GET /delete-user/" + username);
+        usersService.deleteByID(username);
+        return ResponseEntity.ok(null);
     }
+
+//    @RequestMapping(method = RequestMethod.POST, value = "/create-admin-user", produces = { "application/json" }, consumes = { "application/json"})
+//    public ResponseEntity<Void> createAdminUser(@RequestBody User user) throws URISyntaxException {
+//        logger.info("RECEIVED POST /create-admin-user");
+//        if(usersService.checkUserClear(user) != null) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//        user.setProfile("ADMIN");
+//        user.setPassword(MD5Security.getMD5Pass(user.getPassword()));
+//        usersService.saveUser(user);
+//        return ResponseEntity.created(new URI("db")).build();
+//    }
 }
