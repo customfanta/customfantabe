@@ -15,7 +15,6 @@ public class UsersService {
     private UsersRepository usersRepository;
 
     public User saveUser(User user) {
-        user.setPassword(MD5Security.getMD5Pass(user.getPassword()));
         return usersRepository.save(user);
     }
 

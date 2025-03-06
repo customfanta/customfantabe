@@ -44,21 +44,35 @@ public class UsersController {
         if(usersService.checkUserClear(user) != null) {
             return ResponseEntity.badRequest().build();
         }
+        user.setProfile("BASIC");
+        user.setPassword(MD5Security.getMD5Pass(user.getPassword()));
         usersService.saveUser(user);
         return ResponseEntity.created(new URI("db")).build();
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/read-all-user", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<List<User>> readUsers() throws URISyntaxException {
+    @RequestMapping(method = RequestMethod.GET, value = "/read-all-user", produces = { "application/json" })
+    public ResponseEntity<List<User>> readUsers() {
         logger.info("RECEIVED GET /read-all-user");
         return ResponseEntity.ok(usersService.findAll());
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/delete-all-user", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Void> deleteUsers() throws URISyntaxException {
+    @RequestMapping(method = RequestMethod.GET, value = "/delete-all-user", produces = { "application/json" })
+    public ResponseEntity<Void> deleteUsers() {
         logger.info("RECEIVED GET /delete-all-user");
         usersService.deleteAll();
         return ResponseEntity.ok(null);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/create-admin-user", produces = { "application/json" }, consumes = { "application/json"})
+    public ResponseEntity<Void> createAdminUser(@RequestBody User user) throws URISyntaxException {
+        logger.info("RECEIVED POST /create-admin-user");
+        if(usersService.checkUserClear(user) != null) {
+            return ResponseEntity.badRequest().build();
+        }
+        user.setProfile("ADMIN");
+        user.setPassword(MD5Security.getMD5Pass(user.getPassword()));
+        usersService.saveUser(user);
+        return ResponseEntity.created(new URI("db")).build();
     }
 }
