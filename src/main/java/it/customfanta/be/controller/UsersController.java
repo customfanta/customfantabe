@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -45,5 +46,19 @@ public class UsersController {
         }
         usersService.saveUser(user);
         return ResponseEntity.created(new URI("db")).build();
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/read-all-user", produces = { "application/json" }, consumes = { "application/json"})
+    public ResponseEntity<List<User>> readUsers() throws URISyntaxException {
+        logger.info("RECEIVED GET /read-all-user");
+        return ResponseEntity.ok(usersService.findAll());
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/delete-all-user", produces = { "application/json" }, consumes = { "application/json"})
+    public ResponseEntity<Void> deleteUsers() throws URISyntaxException {
+        logger.info("RECEIVED GET /delete-all-user");
+        usersService.deleteAll();
+        return ResponseEntity.ok(null);
     }
 }

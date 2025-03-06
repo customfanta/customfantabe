@@ -6,6 +6,8 @@ import it.customfanta.be.security.MD5Security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UsersService {
 
@@ -23,6 +25,14 @@ public class UsersService {
 
     public User checkUserClear(User findUserRequest) {
         return usersRepository.findByUsernameOrMail(findUserRequest.getUsername(), findUserRequest.getMail()).orElse(null);
+    }
+
+    public List<User> findAll() {
+        return usersRepository.findAll();
+    }
+
+    public void deleteAll() {
+        usersRepository.deleteAll();;
     }
 
 }
