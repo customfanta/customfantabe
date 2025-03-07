@@ -15,4 +15,8 @@ public class SquadreService {
         return squadreRepository.save(squadra);
     }
 
+    public Squadra readSquadraByUtente(String usernameUser) {
+        return squadreRepository.findByUsernameUser(usernameUser).orElse(null);
+    }
+
 }

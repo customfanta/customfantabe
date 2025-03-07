@@ -5,6 +5,8 @@ import it.customfanta.be.repository.PersonaggiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PersonaggiService {
 
@@ -13,6 +15,10 @@ public class PersonaggiService {
 
     public Personaggio savePersonaggio(Personaggio personaggio) {
         return personaggiRepository.save(personaggio);
+    }
+
+    public List<Personaggio> readPersonaggi() {
+        return personaggiRepository.findAll();
     }
 
 }

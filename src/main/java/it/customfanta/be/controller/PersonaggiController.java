@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -29,5 +30,12 @@ public class PersonaggiController {
         } else {
             return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
         }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/read-personaggi", produces = { "application/json" })
+    public ResponseEntity<List<Personaggio>> readPersonaggi() {
+        logger.info("RECEIVED GET /read-personaggi");
+
+        return ResponseEntity.ok(personaggiService.readPersonaggi());
     }
 }

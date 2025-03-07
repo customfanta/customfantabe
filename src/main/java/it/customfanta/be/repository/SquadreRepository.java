@@ -1,11 +1,16 @@
 package it.customfanta.be.repository;
 
 import it.customfanta.be.model.Squadra;
+import it.customfanta.be.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 
 @Repository
 public interface SquadreRepository extends JpaRepository<Squadra, String> {
+
+    Optional<Squadra> findByUsernameUser(String usernameUser);
 
 }

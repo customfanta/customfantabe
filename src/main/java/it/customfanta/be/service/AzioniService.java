@@ -15,4 +15,8 @@ public class AzioniService {
         return azioniRepository.save(azione);
     }
 
+    public Azione readByName(String nomeAzione) {
+        return azioniRepository.findById(nomeAzione).orElse(null);
+    }
+
 }
