@@ -76,10 +76,10 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <configuration>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
 <!--                    <excludes>-->
 <!--                        <exclude>-->
 <!--                            <groupId>org.projectlombok</groupId>-->
@@ -87,8 +87,8 @@
 <!--                            <version>1.18.36</version>-->
 <!--                        </exclude>-->
 <!--                    </excludes>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
