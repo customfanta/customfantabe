@@ -16,4 +16,5 @@ public class Personaggio {
     private String descrizione;
     private Integer costo;
 
+
 }
