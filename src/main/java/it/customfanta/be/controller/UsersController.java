@@ -59,7 +59,7 @@ public class UsersController extends BaseController {
                 cookie.setMaxAge(60);
                 cookie.setPath("/");
                 cookie.setSecure(true);
-                cookie.setHttpOnly(true);
+                cookie.setHttpOnly(false);
                 httpServletResponse.addCookie(cookie);
 
                 return ResponseEntity.ok(user);
@@ -134,9 +134,9 @@ public class UsersController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/make-user-admin/{username}", produces = { "application/json" })
     public ResponseEntity<Esito> makeUserAdmin(@PathVariable("username") String username) {
         logger.info("RECEIVED GET /make-user-admin/" + username);
-//        if(!"ADMIN".equals(userData.getProfile())) {
-//            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-//        }
+        if(!"ADMIN".equals(userData.getProfile())) {
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+        }
         User user = usersService.findById(username);
         user.setProfile("ADMIN");
         usersService.saveUser(user);
