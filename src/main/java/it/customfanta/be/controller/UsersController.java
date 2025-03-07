@@ -1,5 +1,10 @@
 package it.customfanta.be.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import it.customfanta.be.model.ReadSquadraResponse;
 import it.customfanta.be.model.User;
 import it.customfanta.be.security.MD5Security;
 import it.customfanta.be.service.UsersService;
@@ -22,6 +27,13 @@ public class UsersController {
     @Autowired
     private UsersService usersService;
 
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))
+                    })
+            }
+    )
     @RequestMapping(method = RequestMethod.POST, value = "/make-login", produces = { "application/json" }, consumes = { "application/json"})
     public ResponseEntity<User> makeLogin(@RequestBody User userLogin) {
         logger.info("RECEIVED POST /make-login");
@@ -38,6 +50,13 @@ public class UsersController {
         }
     }
 
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "201", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                    })
+            }
+    )
     @RequestMapping(method = RequestMethod.POST, value = "/create-user", produces = { "application/json" }, consumes = { "application/json"})
     public ResponseEntity<Void> createUser(@RequestBody User user) throws URISyntaxException {
         logger.info("RECEIVED POST /create-user");
@@ -51,12 +70,26 @@ public class UsersController {
     }
 
 
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))
+                    })
+            }
+    )
     @RequestMapping(method = RequestMethod.GET, value = "/read-all-user", produces = { "application/json" })
     public ResponseEntity<List<User>> readUsers() {
         logger.info("RECEIVED GET /read-all-user");
         return ResponseEntity.ok(usersService.findAll());
     }
 
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                    })
+            }
+    )
     @RequestMapping(method = RequestMethod.GET, value = "/delete-all-user", produces = { "application/json" })
     public ResponseEntity<Void> deleteUsers() {
         logger.info("RECEIVED GET /delete-all-user");
@@ -64,6 +97,13 @@ public class UsersController {
         return ResponseEntity.ok(null);
     }
 
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                    })
+            }
+    )
     @RequestMapping(method = RequestMethod.GET, value = "/delete-user/{username}", produces = { "application/json" })
     public ResponseEntity<Void> deleteUserById(@PathVariable("username") String username) {
         logger.info("RECEIVED GET /delete-user/" + username);

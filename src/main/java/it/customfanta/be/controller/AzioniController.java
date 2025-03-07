@@ -1,5 +1,9 @@
 package it.customfanta.be.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.Azione;
 import it.customfanta.be.model.Personaggio;
 import it.customfanta.be.service.AzioniService;
@@ -22,6 +26,13 @@ public class AzioniController {
     @Autowired
     private AzioniService azioniService;
 
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "201", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                    })
+            }
+    )
     @RequestMapping(method = RequestMethod.POST, value = "/create-azione", produces = { "application/json" }, consumes = { "application/json"})
     public ResponseEntity<Void> createAzione(@RequestBody Azione azione, @RequestHeader("profilo") String profilo) throws URISyntaxException {
         logger.info("RECEIVED POST /create-personaggio");

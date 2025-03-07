@@ -1,12 +1,15 @@
 package it.customfanta.be.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
 import it.customfanta.be.service.AzioniPersonaggiService;
 import it.customfanta.be.service.AzioniService;
 import it.customfanta.be.service.SquadrePersonaggiService;
 import it.customfanta.be.service.SquadreService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +18,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(originPatterns = "*", allowCredentials = "true", allowedHeaders = "*")
@@ -35,6 +37,13 @@ public class SquadreController {
     @Autowired
     private AzioniService azioniService;
 
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "201", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                    })
+            }
+    )
     @RequestMapping(method = RequestMethod.POST, value = "/create-squadra/{usernameUser}", produces = { "application/json" }, consumes = { "application/json"})
     public ResponseEntity<Void> createSquadra(@RequestBody CreaSquadraRequest creaSquadraRequest, @PathVariable("usernameUser") String usernameUser) throws URISyntaxException {
         logger.info("RECEIVED POST /create-squadra/" +  usernameUser);
@@ -53,6 +62,13 @@ public class SquadreController {
         return ResponseEntity.created(new URI("db")).build();
     }
 
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = ReadSquadraResponse.class))
+                    })
+            }
+    )
     @RequestMapping(method = RequestMethod.GET, value = "/read-squadra/{usernameUser}", produces = { "application/json" })
     public ResponseEntity<ReadSquadraResponse> readSquadra(@PathVariable("usernameUser") String usernameUser) {
         logger.info("RECEIVED GET /read-squadra/" + usernameUser);
