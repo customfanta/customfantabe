@@ -6,14 +6,14 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "personaggi")
+@Table(name = "azioni")
 @Data
-public class Personaggio {
+public class Azione {
 
     @Id
-    private String nominativo;
+    private String azione;
 
     private String descrizione;
-    private Integer costo;
+    private Integer punteggio;
 
 }

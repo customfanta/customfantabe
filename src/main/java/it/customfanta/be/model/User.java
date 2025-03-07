@@ -3,6 +3,7 @@ package it.customfanta.be.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+
 @Entity
 @Table(name = "users")
 @Data
