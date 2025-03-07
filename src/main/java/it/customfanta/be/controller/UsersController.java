@@ -91,20 +91,6 @@ public class UsersController {
                     })
             }
     )
-    @RequestMapping(method = RequestMethod.GET, value = "/delete-all-user", produces = { "application/json" })
-    public ResponseEntity<Esito> deleteUsers() {
-        logger.info("RECEIVED GET /delete-all-user");
-        usersService.deleteAll();
-        return ResponseEntity.ok(new Esito("OK"));
-    }
-
-    @Operation(
-            responses = {
-                    @ApiResponse(responseCode = "200", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
-                    })
-            }
-    )
     @RequestMapping(method = RequestMethod.GET, value = "/delete-user/{username}", produces = { "application/json" })
     public ResponseEntity<Esito> deleteUserById(@PathVariable("username") String username) {
         logger.info("RECEIVED GET /delete-user/" + username);
