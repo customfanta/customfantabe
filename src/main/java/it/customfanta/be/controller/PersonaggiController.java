@@ -1,6 +1,7 @@
 package it.customfanta.be.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -46,7 +47,7 @@ public class PersonaggiController {
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "200", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Personaggio.class))
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Personaggio.class)))
                     })
             }
     )

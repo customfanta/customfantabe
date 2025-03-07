@@ -1,10 +1,10 @@
 package it.customfanta.be.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import it.customfanta.be.model.ReadSquadraResponse;
 import it.customfanta.be.model.User;
 import it.customfanta.be.security.MD5Security;
 import it.customfanta.be.service.UsersService;
@@ -73,7 +73,7 @@ public class UsersController {
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "200", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = User.class)))
                     })
             }
     )
