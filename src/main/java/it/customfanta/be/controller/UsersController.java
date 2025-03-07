@@ -112,15 +112,20 @@ public class UsersController {
         return ResponseEntity.ok(new Esito("OK"));
     }
 
-//    @RequestMapping(method = RequestMethod.POST, value = "/create-admin-user", produces = { "application/json" }, consumes = { "application/json"})
-//    public ResponseEntity<Void> createAdminUser(@RequestBody User user) throws URISyntaxException {
-//        logger.info("RECEIVED POST /create-admin-user");
-//        if(usersService.checkUserClear(user) != null) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//        user.setProfile("ADMIN");
-//        user.setPassword(MD5Security.getMD5Pass(user.getPassword()));
-//        usersService.saveUser(user);
-//        return ResponseEntity.created(new URI("db")).build();
-//    }
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/make-user-admin/{username}", produces = { "application/json" })
+    public ResponseEntity<Esito> makeUserAdmin(@PathVariable("username") String username) {
+        logger.info("RECEIVED GET /make-user-admin/" + username);
+        User user = usersService.findById(username);
+        user.setProfile("ADMIN");
+        usersService.saveUser(user);
+        return ResponseEntity.ok(new Esito("OK"));
+    }
+
 }
