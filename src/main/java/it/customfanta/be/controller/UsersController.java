@@ -58,7 +58,7 @@ public class UsersController extends BaseController {
                 Cookie cookie = new Cookie("user-jwt", jwt);
                 cookie.setMaxAge(60);
                 cookie.setPath("/");
-                cookie.setSecure(true);
+                cookie.setSecure(false);
                 cookie.setHttpOnly(false);
                 httpServletResponse.addCookie(cookie);
 
