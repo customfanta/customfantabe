@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 @RestController
 @CrossOrigin(originPatterns = "*", allowCredentials = "true", allowedHeaders = "*")
-public class PersonaggiController {
+public class PersonaggiController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(PersonaggiController.class.getName());
 
@@ -37,12 +37,12 @@ public class PersonaggiController {
     @RequestMapping(method = RequestMethod.POST, value = "/create-personaggio", produces = { "application/json" }, consumes = { "application/json"})
     public ResponseEntity<Esito> createPersonaggio(@RequestBody Personaggio personaggio, @RequestHeader("profilo") String profilo) throws URISyntaxException {
         logger.info("RECEIVED POST /create-personaggio");
-        if("ADMIN".equals(profilo)) {
-            personaggiService.savePersonaggio(personaggio);
-            return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
-        } else {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).body(new Esito("KO"));
+        if(!"ADMIN".equals(userData.getProfile())) {
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
         }
+        personaggiService.savePersonaggio(personaggio);
+        return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
+
     }
 
     @Operation(

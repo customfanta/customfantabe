@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 @RestController
 @CrossOrigin(originPatterns = "*", allowCredentials = "true", allowedHeaders = "*")
-public class SquadreController {
+public class SquadreController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(SquadreController.class.getName());
 

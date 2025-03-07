@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 @RestController
 @CrossOrigin(originPatterns = "*", allowCredentials = "true", allowedHeaders = "*")
-public class AzioniController {
+public class AzioniController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(AzioniController.class.getName());
 
@@ -57,12 +57,11 @@ public class AzioniController {
     @RequestMapping(method = RequestMethod.POST, value = "/create-azione", produces = { "application/json" }, consumes = { "application/json"})
     public ResponseEntity<Esito> createAzione(@RequestBody Azione azione, @RequestHeader("profilo") String profilo) throws URISyntaxException {
         logger.info("RECEIVED POST /create-azione");
-        if("ADMIN".equals(profilo)) {
-            azioniService.saveAzione(azione);
-            return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
-        } else {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).body(new Esito("KO"));
+        if(!"ADMIN".equals(userData.getProfile())) {
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
         }
+        azioniService.saveAzione(azione);
+        return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }
 
     @Operation(
@@ -75,13 +74,12 @@ public class AzioniController {
     @RequestMapping(method = RequestMethod.POST, value = "/add-azione-to-personaggio", produces = { "application/json" }, consumes = { "application/json"})
     public ResponseEntity<Esito> addAzionePersonaggio(@RequestBody AzionePersonaggio azionePersonaggio, @RequestHeader("profilo") String profilo) throws URISyntaxException {
         logger.info("RECEIVED POST /add-azione-to-personaggio");
-        if("ADMIN".equals(profilo)) {
-            azionePersonaggio.setDataEsecuzione(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
-            azioniPersonaggiService.saveAzionePersonaggio(azionePersonaggio);
-            return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
-        } else {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).body(new Esito("KO"));
+        if(!"ADMIN".equals(userData.getProfile())) {
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
         }
+        azionePersonaggio.setDataEsecuzione(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+        azioniPersonaggiService.saveAzionePersonaggio(azionePersonaggio);
+        return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }
 
 }
