@@ -58,4 +58,20 @@ public class PersonaggiController {
 
         return ResponseEntity.ok(personaggiService.readPersonaggi());
     }
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/drop-personaggi", produces = { "application/json" })
+    public ResponseEntity<Esito> dropPersonaggi() {
+        logger.info("RECEIVED GET /drop-personaggi");
+
+        personaggiService.dropPersonaggi();
+
+        return ResponseEntity.ok(new Esito("OK"));
+    }
 }
