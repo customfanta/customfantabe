@@ -13,12 +13,15 @@ import it.customfanta.be.service.UsersService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -55,12 +58,22 @@ public class UsersController extends BaseController {
                         .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                         .compact();
 
-                Cookie cookie = new Cookie("user-jwt", jwt);
-                cookie.setMaxAge(60);
-                cookie.setPath("/");
-                cookie.setSecure(false);
-                cookie.setHttpOnly(false);
-                httpServletResponse.addCookie(cookie);
+                ResponseCookie responseCookie = ResponseCookie.from("user-jwt", jwt)
+                        .maxAge(Duration.ofHours(4))
+                        .path("/")
+                        .secure(false)
+                        .httpOnly(false)
+                        .sameSite("None")
+                        .build();
+
+                httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
+
+//                Cookie cookie = new Cookie("user-jwt", jwt);
+//                cookie.setMaxAge(60);
+//                cookie.setPath("/");
+//                cookie.setSecure(false);
+//                cookie.setHttpOnly(false);
+//                httpServletResponse.addCookie(cookie);
 
                 return ResponseEntity.ok(user);
             } else {
@@ -101,9 +114,9 @@ public class UsersController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/read-all-user", produces = { "application/json" })
     public ResponseEntity<List<User>> readUsers() {
         logger.info("RECEIVED GET /read-all-user");
-        if(!"ADMIN".equals(userData.getProfile())) {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-        }
+//        if(!"ADMIN".equals(userData.getProfile())) {
+//            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+//        }
         return ResponseEntity.ok(usersService.findAll());
     }
 
@@ -117,9 +130,9 @@ public class UsersController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/delete-user/{username}", produces = { "application/json" })
     public ResponseEntity<Esito> deleteUserById(@PathVariable("username") String username) {
         logger.info("RECEIVED GET /delete-user/" + username);
-        if(!"ADMIN".equals(userData.getProfile())) {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-        }
+//        if(!"ADMIN".equals(userData.getProfile())) {
+//            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+//        }
         usersService.deleteByID(username);
         return ResponseEntity.ok(new Esito("OK"));
     }
@@ -134,9 +147,9 @@ public class UsersController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/make-user-admin/{username}", produces = { "application/json" })
     public ResponseEntity<Esito> makeUserAdmin(@PathVariable("username") String username) {
         logger.info("RECEIVED GET /make-user-admin/" + username);
-        if(!"ADMIN".equals(userData.getProfile())) {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-        }
+//        if(!"ADMIN".equals(userData.getProfile())) {
+//            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+//        }
         User user = usersService.findById(username);
         user.setProfile("ADMIN");
         usersService.saveUser(user);

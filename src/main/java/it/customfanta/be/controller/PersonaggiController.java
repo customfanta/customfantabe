@@ -37,9 +37,9 @@ public class PersonaggiController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, value = "/create-personaggio", produces = { "application/json" }, consumes = { "application/json"})
     public ResponseEntity<Esito> createPersonaggio(@RequestBody Personaggio personaggio, @RequestHeader("profilo") String profilo) throws URISyntaxException {
         logger.info("RECEIVED POST /create-personaggio");
-        if(!"ADMIN".equals(userData.getProfile())) {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-        }
+//        if(!"ADMIN".equals(userData.getProfile())) {
+//            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+//        }
         personaggiService.savePersonaggio(personaggio);
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
 
