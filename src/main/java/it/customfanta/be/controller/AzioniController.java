@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.Azione;
 import it.customfanta.be.model.AzionePersonaggio;
-import it.customfanta.be.model.User;
+import it.customfanta.be.model.Esito;
 import it.customfanta.be.service.AzioniPersonaggiService;
 import it.customfanta.be.service.AzioniService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,37 +50,37 @@ public class AzioniController {
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "201", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
                     })
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/create-azione", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Void> createAzione(@RequestBody Azione azione, @RequestHeader("profilo") String profilo) throws URISyntaxException {
+    public ResponseEntity<Esito> createAzione(@RequestBody Azione azione, @RequestHeader("profilo") String profilo) throws URISyntaxException {
         logger.info("RECEIVED POST /create-azione");
         if("ADMIN".equals(profilo)) {
             azioniService.saveAzione(azione);
-            return ResponseEntity.created(new URI("db")).build();
+            return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
         } else {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).body(new Esito("KO"));
         }
     }
 
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "201", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
                     })
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/add-azione-to-personaggio", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Void> addAzionePersonaggio(@RequestBody AzionePersonaggio azionePersonaggio, @RequestHeader("profilo") String profilo) throws URISyntaxException {
+    public ResponseEntity<Esito> addAzionePersonaggio(@RequestBody AzionePersonaggio azionePersonaggio, @RequestHeader("profilo") String profilo) throws URISyntaxException {
         logger.info("RECEIVED POST /add-azione-to-personaggio");
         if("ADMIN".equals(profilo)) {
             azionePersonaggio.setDataEsecuzione(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
             azioniPersonaggiService.saveAzionePersonaggio(azionePersonaggio);
-            return ResponseEntity.created(new URI("db")).build();
+            return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
         } else {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).body(new Esito("KO"));
         }
     }
 

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.User;
 import it.customfanta.be.security.MD5Security;
 import it.customfanta.be.service.UsersService;
@@ -53,12 +54,12 @@ public class UsersController {
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "201", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
                     })
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/create-user", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Void> createUser(@RequestBody User user) throws URISyntaxException {
+    public ResponseEntity<Esito> createUser(@RequestBody User user) throws URISyntaxException {
         logger.info("RECEIVED POST /create-user");
         if(usersService.checkUserClear(user) != null) {
             return ResponseEntity.badRequest().build();
@@ -66,7 +67,7 @@ public class UsersController {
         user.setProfile("BASIC");
         user.setPassword(MD5Security.getMD5Pass(user.getPassword()));
         usersService.saveUser(user);
-        return ResponseEntity.created(new URI("db")).build();
+        return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }
 
 
@@ -86,29 +87,29 @@ public class UsersController {
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "200", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
                     })
             }
     )
     @RequestMapping(method = RequestMethod.GET, value = "/delete-all-user", produces = { "application/json" })
-    public ResponseEntity<Void> deleteUsers() {
+    public ResponseEntity<Esito> deleteUsers() {
         logger.info("RECEIVED GET /delete-all-user");
         usersService.deleteAll();
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(new Esito("OK"));
     }
 
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "200", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
                     })
             }
     )
     @RequestMapping(method = RequestMethod.GET, value = "/delete-user/{username}", produces = { "application/json" })
-    public ResponseEntity<Void> deleteUserById(@PathVariable("username") String username) {
+    public ResponseEntity<Esito> deleteUserById(@PathVariable("username") String username) {
         logger.info("RECEIVED GET /delete-user/" + username);
         usersService.deleteByID(username);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(new Esito("OK"));
     }
 
 //    @RequestMapping(method = RequestMethod.POST, value = "/create-admin-user", produces = { "application/json" }, consumes = { "application/json"})

@@ -40,12 +40,12 @@ public class SquadreController {
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "201", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
                     })
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/create-squadra/{usernameUser}", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Void> createSquadra(@RequestBody CreaSquadraRequest creaSquadraRequest, @PathVariable("usernameUser") String usernameUser) throws URISyntaxException {
+    public ResponseEntity<Esito> createSquadra(@RequestBody CreaSquadraRequest creaSquadraRequest, @PathVariable("usernameUser") String usernameUser) throws URISyntaxException {
         logger.info("RECEIVED POST /create-squadra/" +  usernameUser);
 
         Squadra squadra = creaSquadraRequest.getSquadra();
@@ -59,7 +59,7 @@ public class SquadreController {
             squadrePersonaggiService.saveSquadraPersonaggio(squadraPersonaggio);
         }
 
-        return ResponseEntity.created(new URI("db")).build();
+        return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }
 
     @Operation(

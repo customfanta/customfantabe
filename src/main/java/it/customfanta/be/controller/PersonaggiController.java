@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.Personaggio;
 import it.customfanta.be.service.PersonaggiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +30,18 @@ public class PersonaggiController {
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "201", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
                     })
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/create-personaggio", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Void> createPersonaggio(@RequestBody Personaggio personaggio, @RequestHeader("profilo") String profilo) throws URISyntaxException {
+    public ResponseEntity<Esito> createPersonaggio(@RequestBody Personaggio personaggio, @RequestHeader("profilo") String profilo) throws URISyntaxException {
         logger.info("RECEIVED POST /create-personaggio");
         if("ADMIN".equals(profilo)) {
             personaggiService.savePersonaggio(personaggio);
-            return ResponseEntity.created(new URI("db")).build();
+            return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
         } else {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).body(new Esito("KO"));
         }
     }
 
