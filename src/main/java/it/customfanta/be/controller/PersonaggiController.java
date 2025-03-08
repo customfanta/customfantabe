@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(originPatterns = "*", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = "https://customfanta.github.io", allowCredentials = "true", allowedHeaders = "*")
 public class PersonaggiController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(PersonaggiController.class.getName());

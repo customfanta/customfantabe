@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(originPatterns = "*", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = "https://customfanta.github.io", allowCredentials = "true", allowedHeaders = "*")
 public class UsersController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(UsersController.class.getName());
@@ -61,9 +61,10 @@ public class UsersController extends BaseController {
                 ResponseCookie responseCookie = ResponseCookie.from("user-jwt", jwt)
                         .maxAge(Duration.ofHours(4))
                         .path("/")
-                        .secure(false)
+                        .secure(true)
                         .httpOnly(false)
                         .sameSite("None")
+//                        .domain("customfanta.github.io")
                         .build();
 
                 httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
