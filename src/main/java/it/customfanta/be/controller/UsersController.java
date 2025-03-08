@@ -10,7 +10,6 @@ import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.User;
 import it.customfanta.be.security.MD5Security;
 import it.customfanta.be.service.UsersService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -55,7 +54,7 @@ public class UsersController extends BaseController {
 
                 String jwt = Jwts.builder().subject(user.getUsername()).claim("nome", user.getNome()).claim("mail", user.getMail()).claim("profile", user.getProfile())
                         .issuedAt(new Date())
-                        .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                        .expiration(new Date(System.currentTimeMillis() + 14400000))
                         .compact();
 
                 ResponseCookie responseCookie = ResponseCookie.from("user-jwt", jwt)
@@ -64,17 +63,9 @@ public class UsersController extends BaseController {
                         .secure(true)
                         .httpOnly(false)
                         .sameSite("None")
-//                        .domain("customfanta.github.io")
                         .build();
 
                 httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
-
-//                Cookie cookie = new Cookie("user-jwt", jwt);
-//                cookie.setMaxAge(60);
-//                cookie.setPath("/");
-//                cookie.setSecure(false);
-//                cookie.setHttpOnly(false);
-//                httpServletResponse.addCookie(cookie);
 
                 return ResponseEntity.ok(user);
             } else {
@@ -115,9 +106,9 @@ public class UsersController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/read-all-user", produces = { "application/json" })
     public ResponseEntity<List<User>> readUsers() {
         logger.info("RECEIVED GET /read-all-user");
-//        if(!"ADMIN".equals(userData.getProfile())) {
-//            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-//        }
+        if(!"ADMIN".equals(userData.getProfile())) {
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+        }
         return ResponseEntity.ok(usersService.findAll());
     }
 
@@ -131,9 +122,9 @@ public class UsersController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/delete-user/{username}", produces = { "application/json" })
     public ResponseEntity<Esito> deleteUserById(@PathVariable("username") String username) {
         logger.info("RECEIVED GET /delete-user/" + username);
-//        if(!"ADMIN".equals(userData.getProfile())) {
-//            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-//        }
+        if(!"ADMIN".equals(userData.getProfile())) {
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+        }
         usersService.deleteByID(username);
         return ResponseEntity.ok(new Esito("OK"));
     }
@@ -148,9 +139,9 @@ public class UsersController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/make-user-admin/{username}", produces = { "application/json" })
     public ResponseEntity<Esito> makeUserAdmin(@PathVariable("username") String username) {
         logger.info("RECEIVED GET /make-user-admin/" + username);
-//        if(!"ADMIN".equals(userData.getProfile())) {
-//            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-//        }
+        if(!"ADMIN".equals(userData.getProfile())) {
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+        }
         User user = usersService.findById(username);
         user.setProfile("ADMIN");
         usersService.saveUser(user);
