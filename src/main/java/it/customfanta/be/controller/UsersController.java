@@ -44,6 +44,30 @@ public class UsersController extends BaseController {
                     })
             }
     )
+    @RequestMapping(method = RequestMethod.GET, value = "/get-utente-loggato", produces = { "application/json" })
+    public ResponseEntity<User> getUtenteLoggato() {
+        logger.info("RECEIVED GET /get-utente-loggato");
+
+        if(userData.getUsername() == null) {
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+        }
+
+        User user = new User();
+        user.setUsername(userData.getUsername());
+        user.setMail(userData.getMail());
+        user.setNome(userData.getNome());
+        user.setProfile(userData.getProfile());
+
+        return ResponseEntity.ok(user);
+    }
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))
+                    })
+            }
+    )
     @RequestMapping(method = RequestMethod.POST, value = "/make-login", produces = { "application/json" }, consumes = { "application/json"})
     public ResponseEntity<User> makeLogin(@RequestBody User userLogin) {
         logger.info("RECEIVED POST /make-login");
