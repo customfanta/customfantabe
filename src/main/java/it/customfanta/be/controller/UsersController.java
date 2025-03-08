@@ -76,7 +76,7 @@ public class UsersController extends BaseController {
             if(MD5Security.getMD5Pass(userLogin.getPassword()).equals(user.getPassword())) {
                 user.setPassword(null);
 
-                String jwt = Jwts.builder().subject(user.getUsername()).claim("nome", user.getNome()).claim("mail", user.getMail()).claim("profile", user.getProfile())
+                String jwt = Jwts.builder().subject(user.getUsername()).claim("username", user.getUsername()).claim("nome", user.getNome()).claim("mail", user.getMail()).claim("profile", user.getProfile())
                         .issuedAt(new Date())
                         .expiration(new Date(System.currentTimeMillis() + 14400000))
                         .compact();
