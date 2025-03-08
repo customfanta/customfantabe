@@ -12,5 +12,6 @@ public class UserData {
 	private String nome;
 	private String profile;
 	private String mail;
+	private boolean logged;
 
 }

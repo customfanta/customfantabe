@@ -48,7 +48,7 @@ public class UsersController extends BaseController {
     public ResponseEntity<User> getUtenteLoggato() {
         logger.info("RECEIVED GET /get-utente-loggato");
 
-        if(userData.getUsername() == null) {
+        if(!userData.isLogged()) {
             return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
         }
 

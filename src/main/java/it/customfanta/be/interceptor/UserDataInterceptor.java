@@ -34,6 +34,7 @@ public class UserDataInterceptor implements HandlerInterceptor {
                     userData.setNome(String.valueOf(payload.get("nome")));
                     userData.setProfile(String.valueOf(payload.get("profile")));
                     userData.setMail(String.valueOf(payload.get("mail")));
+                    userData.setLogged(true);
                     return true;
                 }
             }
