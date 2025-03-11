@@ -138,7 +138,7 @@ public class SquadreController extends BaseController {
             squadrePersonaggiService.deleteSquadraPersonaggioById(squadraPersonaggio.getChiave());
         }
 
-        squadreService.deleteSquadraById(squadra.getNome());
+        squadreService.deleteSquadraById(squadra.getChiave());
         return ResponseEntity.ok(new Esito("OK"));
     }
 
