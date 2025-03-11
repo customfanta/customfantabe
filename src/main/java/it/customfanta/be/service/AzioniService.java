@@ -2,13 +2,14 @@ package it.customfanta.be.service;
 
 import it.customfanta.be.model.Azione;
 import it.customfanta.be.repository.AzioniRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class AzioniService {
+public class AzioniService extends BaseService {
 
     @Autowired
     private AzioniRepository azioniRepository;
@@ -23,6 +24,12 @@ public class AzioniService {
 
     public List<Azione> realAll() {
         return azioniRepository.findAll();
+    }
+
+    @Transactional
+    public void dropAzioniService() {
+        entityManager.createNativeQuery("DROP TABLE IF EXISTS azioni")
+                .executeUpdate();
     }
 
 }

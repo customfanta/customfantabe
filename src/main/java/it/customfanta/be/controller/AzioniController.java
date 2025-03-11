@@ -77,7 +77,9 @@ public class AzioniController extends BaseController {
         if(!"ADMIN".equals(userData.getProfile())) {
             return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
         }
-        azionePersonaggio.setDataEsecuzione(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+        String dataEsecuzione = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        azionePersonaggio.setDataEsecuzione(dataEsecuzione);
+        azionePersonaggio.setChiave(String.format("%s%s%s", azionePersonaggio.getNominativoPersonaggio(), azionePersonaggio.getAzione(), dataEsecuzione));
         azioniPersonaggiService.saveAzionePersonaggio(azionePersonaggio);
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }

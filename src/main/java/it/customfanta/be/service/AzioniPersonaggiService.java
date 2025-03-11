@@ -2,6 +2,7 @@ package it.customfanta.be.service;
 
 import it.customfanta.be.model.AzionePersonaggio;
 import it.customfanta.be.repository.AzioniPersonaggiRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AzioniPersonaggiService {
+public class AzioniPersonaggiService extends BaseService {
 
     @Autowired
     private AzioniPersonaggiRepository azioniPersonaggiRepository;
@@ -22,5 +23,10 @@ public class AzioniPersonaggiService {
         return azioniPersonaggiRepository.findByNominativoPersonaggio(nomePersonaggio).orElse(new ArrayList<>());
     }
 
+    @Transactional
+    public void dropAzioniPersonaggi() {
+        entityManager.createNativeQuery("DROP TABLE IF EXISTS azioni_personaggi")
+                .executeUpdate();
+    }
 
 }

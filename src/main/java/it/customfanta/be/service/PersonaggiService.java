@@ -10,13 +10,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PersonaggiService {
+public class PersonaggiService extends BaseService {
 
     @Autowired
     private PersonaggiRepository personaggiRepository;
-
-    @Autowired
-    private EntityManager entityManager;
 
     public Personaggio savePersonaggio(Personaggio personaggio) {
         return personaggiRepository.save(personaggio);

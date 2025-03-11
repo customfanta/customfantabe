@@ -9,7 +9,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface AzioniPersonaggiRepository extends JpaRepository<AzionePersonaggio, Integer> {
+public interface AzioniPersonaggiRepository extends JpaRepository<AzionePersonaggio, String> {
 
     Optional<List<AzionePersonaggio>> findByNominativoPersonaggio(String nominativoPersonaggio);
 }

@@ -2,14 +2,14 @@ package it.customfanta.be.service;
 
 import it.customfanta.be.model.User;
 import it.customfanta.be.repository.UsersRepository;
-import it.customfanta.be.security.MD5Security;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UsersService {
+public class UsersService extends BaseService {
 
     @Autowired
     private UsersRepository usersRepository;
@@ -19,10 +19,6 @@ public class UsersService {
     }
 
     public User findUser(User findUserRequest) {
-        return usersRepository.findByUsernameAndMail(findUserRequest.getUsername(), findUserRequest.getMail()).orElse(null);
-    }
-
-    public User checkUserClear(User findUserRequest) {
         return usersRepository.findByUsernameOrMail(findUserRequest.getUsername(), findUserRequest.getMail()).orElse(null);
     }
 
@@ -40,6 +36,12 @@ public class UsersService {
 
     public void deleteByID(String username) {
         usersRepository.deleteById(username);
+    }
+
+    @Transactional
+    public void dropUsers() {
+        entityManager.createNativeQuery("DROP TABLE IF EXISTS users")
+                .executeUpdate();
     }
 
 }

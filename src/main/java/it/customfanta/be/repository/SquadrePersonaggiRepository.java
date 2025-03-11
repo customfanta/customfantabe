@@ -9,7 +9,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface SquadrePersonaggiRepository extends JpaRepository<SquadraPersonaggio, Integer> {
+public interface SquadrePersonaggiRepository extends JpaRepository<SquadraPersonaggio, String> {
 
     Optional<List<SquadraPersonaggio>> findByNomeSquadra(String nomeSquadra);
 

@@ -8,8 +8,8 @@ import lombok.Data;
 @Data
 public class AzionePersonaggio {
 
-    @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer id;
+    @Id
+    private String chiave;
 
     private String azione;
     private String nominativoPersonaggio;

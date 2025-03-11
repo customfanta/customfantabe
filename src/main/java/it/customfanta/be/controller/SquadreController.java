@@ -53,9 +53,11 @@ public class SquadreController extends BaseController {
         squadreService.saveSquadra(squadra);
 
         SquadraPersonaggio squadraPersonaggio = new SquadraPersonaggio();
+        squadraPersonaggio.setNomeUtente(usernameUser);
         squadraPersonaggio.setNomeSquadra(squadra.getNome());
         for(String nomePersonaggio : creaSquadraRequest.getNomiPersonaggi()) {
             squadraPersonaggio.setNominativoPersonaggio(nomePersonaggio);
+            squadraPersonaggio.setChiave(String.format("%s%s%s", usernameUser, squadra.getNome(), nomePersonaggio));
             squadrePersonaggiService.saveSquadraPersonaggio(squadraPersonaggio);
         }
 

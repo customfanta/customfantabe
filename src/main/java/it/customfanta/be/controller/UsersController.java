@@ -134,7 +134,7 @@ public class UsersController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, value = "/create-user", produces = { "application/json" }, consumes = { "application/json"})
     public ResponseEntity<Esito> createUser(@RequestBody User user) throws URISyntaxException {
         logger.info("RECEIVED POST /create-user");
-        if(usersService.checkUserClear(user) != null) {
+        if(usersService.findUser(user) != null) {
             return ResponseEntity.badRequest().build();
         }
         user.setProfile("BASIC");

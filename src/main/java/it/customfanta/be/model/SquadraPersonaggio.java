@@ -8,9 +8,10 @@ import lombok.Data;
 @Data
 public class SquadraPersonaggio {
 
-    @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer id;
+    @Id
+    private String chiave;
 
+    private String nomeUtente;
     private String nomeSquadra;
     private String nominativoPersonaggio;
 
