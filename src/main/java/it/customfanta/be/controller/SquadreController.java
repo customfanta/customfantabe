@@ -10,6 +10,7 @@ import it.customfanta.be.service.AzioniService;
 import it.customfanta.be.service.SquadrePersonaggiService;
 import it.customfanta.be.service.SquadreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,8 +49,13 @@ public class SquadreController extends BaseController {
     public ResponseEntity<Esito> createSquadra(@RequestBody CreaSquadraRequest creaSquadraRequest, @PathVariable("usernameUser") String usernameUser) throws URISyntaxException {
         logger.info("RECEIVED POST /create-squadra/" +  usernameUser);
 
+        if(!userData.getUsername().equals(usernameUser)) {
+            return ResponseEntity.status(HttpStatusCode.valueOf(401)).body(new Esito("KO"));
+        }
+
         Squadra squadra = creaSquadraRequest.getSquadra();
         squadra.setUsernameUser(usernameUser);
+        squadra.setChiave(String.format("%s%s", usernameUser, squadra.getNome()));
         squadreService.saveSquadra(squadra);
 
         SquadraPersonaggio squadraPersonaggio = new SquadraPersonaggio();
@@ -109,6 +115,31 @@ public class SquadreController extends BaseController {
         readSquadraResponse.setPunteggioSquadra(personaggiResponse.stream().mapToInt(PersonaggioResponse::getPunteggioAttuale).sum());
 
         return ResponseEntity.ok(readSquadraResponse);
+    }
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/delete-squadra/{usernameUser}", produces = { "application/json" })
+    public ResponseEntity<Esito> deleteSquadra(@PathVariable("usernameUser") String usernameUser) {
+        logger.info("RECEIVED GET /delete-squadra/" + usernameUser);
+
+        Squadra squadra = squadreService.readSquadraByUtente(usernameUser);
+        if(squadra == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<SquadraPersonaggio> squadraPersonaggi = squadrePersonaggiService.readByNomeSquadra(squadra.getNome());
+        for(SquadraPersonaggio squadraPersonaggio : squadraPersonaggi) {
+            squadrePersonaggiService.deleteSquadraPersonaggioById(squadraPersonaggio.getChiave());
+        }
+
+        squadreService.deleteSquadraById(squadra.getNome());
+        return ResponseEntity.ok(new Esito("OK"));
     }
 
 }

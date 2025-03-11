@@ -20,6 +20,10 @@ public class SquadreService extends BaseService {
         return squadreRepository.findByUsernameUser(usernameUser).orElse(null);
     }
 
+    public void deleteSquadraById(String chiave) {
+        squadreRepository.deleteById(chiave);
+    }
+
     @Transactional
     public void dropSquadre() {
         entityManager.createNativeQuery("DROP TABLE IF EXISTS squadre")

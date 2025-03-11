@@ -11,11 +11,10 @@ import java.util.List;
 public class Squadra {
 
     @Id
+    private String chiave;
+
     private String nome;
-
     private String descrizione;
-
-
     private String usernameUser;
 
 }

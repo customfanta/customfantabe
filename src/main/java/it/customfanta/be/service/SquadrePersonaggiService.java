@@ -23,6 +23,10 @@ public class SquadrePersonaggiService extends BaseService {
         return squadrePersonaggiRepository.findByNomeSquadra(nomeSquadra).orElse(new ArrayList<>());
     }
 
+    public void deleteSquadraPersonaggioById(String chiave) {
+        squadrePersonaggiRepository.deleteById(chiave);
+    }
+
     @Transactional
     public void dropSquadrePersonaggi() {
         entityManager.createNativeQuery("DROP TABLE IF EXISTS squadre_personaggi")
