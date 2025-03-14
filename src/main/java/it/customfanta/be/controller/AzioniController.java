@@ -86,7 +86,7 @@ public class AzioniController extends BaseController {
         azionePersonaggio.setChiave(String.format("%s%s%s", azionePersonaggio.getNominativoPersonaggio(), azionePersonaggio.getAzione(), dataEsecuzione));
         azioniPersonaggiService.saveAzionePersonaggio(azionePersonaggio);
 
-        simpMessagingTemplate.convertAndSend("/azione-personaggio-aggiunta", azionePersonaggio);
+        simpMessagingTemplate.convertAndSend("/topic/azione-personaggio-aggiunta", "AGGIORNATA AZIONE PERSONAGGIO");
 
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }
