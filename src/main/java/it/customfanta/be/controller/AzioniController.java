@@ -100,7 +100,7 @@ public class AzioniController extends BaseController {
     )
     @RequestMapping(method = RequestMethod.GET, value = "/test-web-socket", produces = { "application/json"})
     public ResponseEntity<Esito> testWebSocket() {
-        simpMessagingTemplate.convertAndSend("/test-ws", "OK");
+        simpMessagingTemplate.convertAndSend("/topic/test-ws", "OK");
         return ResponseEntity.ok(new Esito("OK"));
     }
 }
