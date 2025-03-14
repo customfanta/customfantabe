@@ -13,6 +13,7 @@ import it.customfanta.be.service.AzioniService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -33,6 +34,9 @@ public class AzioniController extends BaseController {
 
     @Autowired
     private AzioniPersonaggiService azioniPersonaggiService;
+
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @Operation(
             responses = {
@@ -81,6 +85,9 @@ public class AzioniController extends BaseController {
         azionePersonaggio.setDataEsecuzione(dataEsecuzione);
         azionePersonaggio.setChiave(String.format("%s%s%s", azionePersonaggio.getNominativoPersonaggio(), azionePersonaggio.getAzione(), dataEsecuzione));
         azioniPersonaggiService.saveAzionePersonaggio(azionePersonaggio);
+
+        simpMessagingTemplate.convertAndSend("/azione-personaggio-aggiunta", azionePersonaggio);
+
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }
 
