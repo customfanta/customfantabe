@@ -10,7 +10,6 @@ import it.customfanta.be.service.AzioniService;
 import it.customfanta.be.service.SquadrePersonaggiService;
 import it.customfanta.be.service.SquadreService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,25 +44,20 @@ public class SquadreController extends BaseController {
                     })
             }
     )
-    @RequestMapping(method = RequestMethod.POST, value = "/create-squadra/{usernameUser}", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> createSquadra(@RequestBody CreaSquadraRequest creaSquadraRequest, @PathVariable("usernameUser") String usernameUser) throws URISyntaxException {
-        logger.info("RECEIVED POST /create-squadra/" +  usernameUser);
-
-        if(!userData.getUsername().equals(usernameUser)) {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).body(new Esito("KO"));
-        }
+    @RequestMapping(method = RequestMethod.POST, value = "/crea-squadra", produces = { "application/json" }, consumes = { "application/json"})
+    public ResponseEntity<Esito> createSquadra(@RequestBody CreaSquadraRequest creaSquadraRequest) throws URISyntaxException {
+        logger.info("RECEIVED POST /crea-squadra");
 
         Squadra squadra = creaSquadraRequest.getSquadra();
-        squadra.setUsernameUser(usernameUser);
-        squadra.setChiave(String.format("%s%s", usernameUser, squadra.getNome()));
+        squadra.setChiave(String.format("%s%s%s", squadra.getChiaveCampionato(), userData.getUsername(), squadra.getNome()));
+        squadra.setUsernameUtente(userData.getUsername());
         squadreService.saveSquadra(squadra);
 
         SquadraPersonaggio squadraPersonaggio = new SquadraPersonaggio();
-        squadraPersonaggio.setNomeUtente(usernameUser);
-        squadraPersonaggio.setNomeSquadra(squadra.getNome());
-        for(String nomePersonaggio : creaSquadraRequest.getNomiPersonaggi()) {
-            squadraPersonaggio.setNominativoPersonaggio(nomePersonaggio);
-            squadraPersonaggio.setChiave(String.format("%s%s%s", usernameUser, squadra.getNome(), nomePersonaggio));
+        squadraPersonaggio.setChiaveSquadra(squadra.getChiave());
+        for(String chiavePersonaggio : creaSquadraRequest.getChiaviPersonaggi()) {
+            squadraPersonaggio.setChiavePersonaggio(chiavePersonaggio);
+            squadraPersonaggio.setChiave(String.format("%s%s", squadra.getChiave(), chiavePersonaggio));
             squadrePersonaggiService.saveSquadraPersonaggio(squadraPersonaggio);
         }
 
@@ -96,12 +90,12 @@ public class SquadreController extends BaseController {
 
         for(SquadraPersonaggio squadraPersonaggio : squadraPersonaggi) {
             PersonaggioResponse personaggioResponse = new PersonaggioResponse();
-            personaggioResponse.setNomePersonaggio(squadraPersonaggio.getNominativoPersonaggio());
+            personaggioResponse.setNomePersonaggio(squadraPersonaggio.getChiavePersonaggio());
 
-            List<AzionePersonaggio> azioniPersonaggi = azioniPersonaggiService.readByNomePersonaggio(squadraPersonaggio.getNominativoPersonaggio());
+            List<AzionePersonaggio> azioniPersonaggi = azioniPersonaggiService.readByChiavePersonaggio(squadraPersonaggio.getChiavePersonaggio());
             int punteggioPersonaggio = 0;
             for(AzionePersonaggio azionePersonaggio : azioniPersonaggi) {
-                Azione azione = azioniService.readByName(azionePersonaggio.getAzione());
+                Azione azione = azioniService.readByChiave(azionePersonaggio.getChiaveAzione());
                 if(azione != null) {
                     punteggioPersonaggio += azione.getPunteggio();
                 }

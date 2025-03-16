@@ -15,6 +15,7 @@ public class Squadra {
 
     private String nome;
     private String descrizione;
-    private String usernameUser;
+    private String usernameUtente;
+    private String chiaveCampionato;
 
 }

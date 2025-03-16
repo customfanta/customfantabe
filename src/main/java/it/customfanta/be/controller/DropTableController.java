@@ -34,7 +34,13 @@ public class DropTableController extends BaseController {
     private SquadreService squadreService;
 
     @Autowired
-    private UsersService usersService;
+    private UtentiService utentiService;
+
+    @Autowired
+    private CampionatiService campionatiService;
+
+    @Autowired
+    private UtentiCampionatiService utentiCampionatiService;
 
     @Operation(responses = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))})})
     @RequestMapping(method = RequestMethod.GET, value = "/drop-azioni-personaggi", produces = { "application/json" })
@@ -72,9 +78,23 @@ public class DropTableController extends BaseController {
     }
 
     @Operation(responses = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))})})
-    @RequestMapping(method = RequestMethod.GET, value = "/drop-users", produces = { "application/json" })
-    public ResponseEntity<Esito> dropUsers() {
-        usersService.dropUsers();
+    @RequestMapping(method = RequestMethod.GET, value = "/drop-utenti", produces = { "application/json" })
+    public ResponseEntity<Esito> dropUtenti() {
+        utentiService.dropTable();
+        return ResponseEntity.ok(new Esito("OK"));
+    }
+
+    @Operation(responses = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))})})
+    @RequestMapping(method = RequestMethod.GET, value = "/drop-campionati", produces = { "application/json" })
+    public ResponseEntity<Esito> dropCampionati() {
+        campionatiService.dropTable();
+        return ResponseEntity.ok(new Esito("OK"));
+    }
+
+    @Operation(responses = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))})})
+    @RequestMapping(method = RequestMethod.GET, value = "/drop-utenti-campionati", produces = { "application/json" })
+    public ResponseEntity<Esito> dropUtentiCampionati() {
+        utentiCampionatiService.dropTable();
         return ResponseEntity.ok(new Esito("OK"));
     }
 

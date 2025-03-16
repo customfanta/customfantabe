@@ -8,7 +8,7 @@ import java.util.List;
 public class CreaSquadraRequest {
 
     private Squadra squadra;
-    private List<String> nomiPersonaggi;
+    private List<String> chiaviPersonaggi;
 
 
 }

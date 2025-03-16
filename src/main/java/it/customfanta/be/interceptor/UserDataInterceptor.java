@@ -32,7 +32,6 @@ public class UserDataInterceptor implements HandlerInterceptor {
                     Claims payload = Jwts.parser().unsecured().build().parseUnsecuredClaims(jweValue).getPayload();
                     userData.setUsername(String.valueOf(payload.get("username")));
                     userData.setNome(String.valueOf(payload.get("nome")));
-                    userData.setProfile(String.valueOf(payload.get("profile")));
                     userData.setMail(String.valueOf(payload.get("mail")));
                     userData.setLogged(true);
                     return true;

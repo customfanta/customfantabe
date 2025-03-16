@@ -19,8 +19,8 @@ public class AzioniPersonaggiService extends BaseService {
         return azioniPersonaggiRepository.save(azionePersonaggio);
     }
 
-    public List<AzionePersonaggio> readByNomePersonaggio(String nomePersonaggio) {
-        return azioniPersonaggiRepository.findByNominativoPersonaggio(nomePersonaggio).orElse(new ArrayList<>());
+    public List<AzionePersonaggio> readByChiavePersonaggio(String chiavePersonaggio) {
+        return azioniPersonaggiRepository.findByChiavePersonaggio(chiavePersonaggio).orElse(new ArrayList<>());
     }
 
     @Transactional

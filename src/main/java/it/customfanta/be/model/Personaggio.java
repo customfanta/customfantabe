@@ -11,10 +11,11 @@ import lombok.Data;
 public class Personaggio {
 
     @Id
-    private String nominativo;
+    private String chiave;
 
+    private String nominativo;
     private String descrizione;
     private Integer costo;
-
+    private String chiaveCampionato;
 
 }

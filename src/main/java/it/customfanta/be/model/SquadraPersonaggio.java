@@ -11,8 +11,7 @@ public class SquadraPersonaggio {
     @Id
     private String chiave;
 
-    private String nomeUtente;
-    private String nomeSquadra;
-    private String nominativoPersonaggio;
+    private String chiaveSquadra;
+    private String chiavePersonaggio;
 
 }

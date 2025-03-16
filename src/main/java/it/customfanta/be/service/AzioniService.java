@@ -18,8 +18,8 @@ public class AzioniService extends BaseService {
         return azioniRepository.save(azione);
     }
 
-    public Azione readByName(String nomeAzione) {
-        return azioniRepository.findById(nomeAzione).orElse(null);
+    public Azione readByChiave(String chiave) {
+        return azioniRepository.findById(chiave).orElse(null);
     }
 
     public List<Azione> realAll() {

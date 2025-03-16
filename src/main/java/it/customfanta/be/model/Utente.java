@@ -5,15 +5,14 @@ import lombok.Data;
 
 
 @Entity
-@Table(name = "users")
+@Table(name = "utenti")
 @Data
-public class User {
+public class Utente {
 
     @Id
     private String username;
 
     private String nome;
-    private String profile;
 
     private String mail;
     private String password;

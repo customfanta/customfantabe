@@ -5,18 +5,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+
 @Entity
-@Table(name = "azioni")
+@Table(name = "campionati")
 @Data
-public class Azione {
+public class Campionato {
 
     @Id
     private String chiave;
 
-
-    private String azione;
+    private String nome;
     private String descrizione;
-    private Integer punteggio;
-    private String chiaveCampionato;
+    private String usernameUtenteOwner;
 
 }
