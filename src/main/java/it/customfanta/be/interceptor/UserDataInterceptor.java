@@ -7,12 +7,16 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class UserDataInterceptor implements HandlerInterceptor {
+
+    @Value("${testing}")
+    private boolean testing;
 
     @Autowired
     private UserData userData;
@@ -23,18 +27,25 @@ public class UserDataInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for(int i = 0; i < cookies.length; i++) {
-                Cookie cookie = cookies[i];
-                if ("user-jwt".equals(cookie.getName())) {
-                    String jweValue = cookie.getValue();
-                    Claims payload = Jwts.parser().unsecured().build().parseUnsecuredClaims(jweValue).getPayload();
-                    userData.setUsername(String.valueOf(payload.get("username")));
-                    userData.setNome(String.valueOf(payload.get("nome")));
-                    userData.setMail(String.valueOf(payload.get("mail")));
-                    userData.setLogged(true);
-                    return true;
+        if(testing) {
+            userData.setUsername("AntoTest");
+            userData.setNome("AntoTestName");
+            userData.setMail("AntoTestMail");
+            userData.setLogged(true);
+        } else {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (int i = 0; i < cookies.length; i++) {
+                    Cookie cookie = cookies[i];
+                    if ("user-jwt".equals(cookie.getName())) {
+                        String jweValue = cookie.getValue();
+                        Claims payload = Jwts.parser().unsecured().build().parseUnsecuredClaims(jweValue).getPayload();
+                        userData.setUsername(String.valueOf(payload.get("username")));
+                        userData.setNome(String.valueOf(payload.get("nome")));
+                        userData.setMail(String.valueOf(payload.get("mail")));
+                        userData.setLogged(true);
+                        return true;
+                    }
                 }
             }
         }
