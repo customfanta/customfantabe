@@ -16,8 +16,8 @@ public class SquadreService extends BaseService {
         return squadreRepository.save(squadra);
     }
 
-    public Squadra readSquadraByUtente(String usernameUser) {
-        return squadreRepository.findByUsernameUser(usernameUser).orElse(null);
+    public Squadra readSquadraByUtente(String usernameUtente) {
+        return squadreRepository.findByUsernameUtente(usernameUtente).orElse(null);
     }
 
     public void deleteSquadraById(String chiave) {

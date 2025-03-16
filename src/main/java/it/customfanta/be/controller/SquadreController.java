@@ -86,7 +86,7 @@ public class SquadreController extends BaseController {
 
         List<PersonaggioResponse> personaggiResponse = new ArrayList<>();
 
-        List<SquadraPersonaggio> squadraPersonaggi = squadrePersonaggiService.readByNomeSquadra(squadra.getNome());
+        List<SquadraPersonaggio> squadraPersonaggi = squadrePersonaggiService.readByChiaveSquadra(squadra.getChiave());
 
         for(SquadraPersonaggio squadraPersonaggio : squadraPersonaggi) {
             PersonaggioResponse personaggioResponse = new PersonaggioResponse();
@@ -127,7 +127,7 @@ public class SquadreController extends BaseController {
             return ResponseEntity.notFound().build();
         }
 
-        List<SquadraPersonaggio> squadraPersonaggi = squadrePersonaggiService.readByNomeSquadra(squadra.getNome());
+        List<SquadraPersonaggio> squadraPersonaggi = squadrePersonaggiService.readByChiaveSquadra(squadra.getChiave());
         for(SquadraPersonaggio squadraPersonaggio : squadraPersonaggi) {
             squadrePersonaggiService.deleteSquadraPersonaggioById(squadraPersonaggio.getChiave());
         }

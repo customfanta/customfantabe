@@ -19,8 +19,8 @@ public class SquadrePersonaggiService extends BaseService {
         return squadrePersonaggiRepository.save(squadraPersonaggio);
     }
 
-    public List<SquadraPersonaggio> readByNomeSquadra(String nomeSquadra) {
-        return squadrePersonaggiRepository.findByNomeSquadra(nomeSquadra).orElse(new ArrayList<>());
+    public List<SquadraPersonaggio> readByChiaveSquadra(String chiaveSquadra) {
+        return squadrePersonaggiRepository.findByChiaveSquadra(chiaveSquadra).orElse(new ArrayList<>());
     }
 
     public void deleteSquadraPersonaggioById(String chiave) {

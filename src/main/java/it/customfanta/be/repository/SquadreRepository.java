@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface SquadreRepository extends JpaRepository<Squadra, String> {
 
-    Optional<Squadra> findByUsernameUser(String usernameUser);
+    Optional<Squadra> findByUsernameUtente(String usernameUtente);
 
 }
