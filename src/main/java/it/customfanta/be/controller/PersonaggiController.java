@@ -9,7 +9,6 @@ import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.Personaggio;
 import it.customfanta.be.service.PersonaggiService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
