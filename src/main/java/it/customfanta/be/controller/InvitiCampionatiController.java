@@ -93,4 +93,33 @@ public class InvitiCampionatiController extends BaseController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = InvitoCampionatoResponse.class)))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/read-inviti-invitati", produces = { "application/json" })
+    public ResponseEntity<List<InvitoCampionatoResponse>> readInvitiInviati() {
+        logger.info("RECEIVED GET /read-inviti-invitati");
+
+        List<InvitoCampionato> findMyInvitiInviati = invitiCampionatiRepository.findByUsernameUtenteCheHaInvitato(userData.getUsername());
+
+        List<InvitoCampionatoResponse> response = new ArrayList<>();
+
+        for(InvitoCampionato invitoCampionato : findMyInvitiInviati) {
+            InvitoCampionatoResponse invitoCampionatoResponse = new InvitoCampionatoResponse();
+
+            invitoCampionatoResponse.setChiave(invitoCampionato.getChiave());
+            invitoCampionatoResponse.setCampionato(campionatiRepository.findById(invitoCampionato.getChiaveCampionato()).get());
+            invitoCampionatoResponse.setUsernameUtenteCheHaInvitato(invitoCampionato.getUsernameUtenteCheHaInvitato());
+            invitoCampionatoResponse.setRuoloInvito(invitoCampionato.getRuoloInvito());
+
+            response.add(invitoCampionatoResponse);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
 }
