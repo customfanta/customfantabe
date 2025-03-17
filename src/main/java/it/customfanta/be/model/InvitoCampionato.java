@@ -17,6 +17,5 @@ public class InvitoCampionato {
     private String ruoloInvito;
     private String chiaveCampionato;
     private String usernameUtenteCheHaInvitato;
-    private Boolean invitoAccettato;
 
 }
