@@ -19,8 +19,8 @@ public class PersonaggiService extends BaseService {
         return personaggiRepository.save(personaggio);
     }
 
-    public List<Personaggio> readPersonaggi() {
-        return personaggiRepository.findAll();
+    public List<Personaggio> readPersonaggi(String chiaveCampionato) {
+        return personaggiRepository.findByChiaveCampionato(chiaveCampionato);
     }
 
     @Transactional

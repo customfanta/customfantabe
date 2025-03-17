@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(origins = "https://customfanta.github.io", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://customfanta.github.io", "http://localhost:8080"}, allowCredentials = "true", allowedHeaders = "*")
 public class SquadreController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(SquadreController.class.getName());
@@ -71,13 +71,13 @@ public class SquadreController extends BaseController {
                     })
             }
     )
-    @RequestMapping(method = RequestMethod.GET, value = "/read-squadra/{usernameUser}", produces = { "application/json" })
-    public ResponseEntity<ReadSquadraResponse> readSquadra(@PathVariable("usernameUser") String usernameUser) {
-        logger.info("RECEIVED GET /read-squadra/" + usernameUser);
+    @RequestMapping(method = RequestMethod.GET, value = "/read-squadra/{usernameUtente}/{chiaveCampionato}", produces = { "application/json" })
+    public ResponseEntity<ReadSquadraResponse> readSquadra(@PathVariable("usernameUtente") String usernameUtente, @PathVariable("chiaveCampionato") String chiaveCampionato) {
+        logger.info("RECEIVED GET /read-squadra/" + usernameUtente + "/" + chiaveCampionato);
 
         ReadSquadraResponse readSquadraResponse = new ReadSquadraResponse();
 
-        Squadra squadra = squadreService.readSquadraByUtente(usernameUser);
+        Squadra squadra = squadreService.readSquadraByUtente(usernameUtente, chiaveCampionato);
         if(squadra == null) {
             return ResponseEntity.notFound().build();
         }
@@ -118,11 +118,11 @@ public class SquadreController extends BaseController {
                     })
             }
     )
-    @RequestMapping(method = RequestMethod.GET, value = "/delete-squadra/{usernameUser}", produces = { "application/json" })
-    public ResponseEntity<Esito> deleteSquadra(@PathVariable("usernameUser") String usernameUser) {
-        logger.info("RECEIVED GET /delete-squadra/" + usernameUser);
+    @RequestMapping(method = RequestMethod.GET, value = "/delete-squadra/{usernameUtente}/{chiaveCampionato}", produces = { "application/json" })
+    public ResponseEntity<Esito> deleteSquadra(@PathVariable("usernameUtente") String usernameUtente, @PathVariable("chiaveCampionato") String chiaveCampionato) {
+        logger.info("RECEIVED GET /delete-squadra/" + usernameUtente + "/" + chiaveCampionato);
 
-        Squadra squadra = squadreService.readSquadraByUtente(usernameUser);
+        Squadra squadra = squadreService.readSquadraByUtente(usernameUtente, chiaveCampionato);
         if(squadra == null) {
             return ResponseEntity.notFound().build();
         }

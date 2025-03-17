@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(origins = "https://customfanta.github.io", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://customfanta.github.io", "http://localhost:8080"}, allowCredentials = "true", allowedHeaders = "*")
 public class PersonaggiController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(PersonaggiController.class.getName());
@@ -34,8 +34,9 @@ public class PersonaggiController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/create-personaggio", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> createPersonaggio(@RequestBody Personaggio personaggio, @RequestHeader("profilo") String profilo) throws URISyntaxException {
+    public ResponseEntity<Esito> createPersonaggio(@RequestBody Personaggio personaggio) throws URISyntaxException {
         logger.info("RECEIVED POST /create-personaggio");
+        personaggio.setChiave(String.format("%s%s", personaggio.getChiaveCampionato(), personaggio.getNominativo()));
         personaggiService.savePersonaggio(personaggio);
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
 
@@ -48,11 +49,11 @@ public class PersonaggiController extends BaseController {
                     })
             }
     )
-    @RequestMapping(method = RequestMethod.GET, value = "/read-personaggi", produces = { "application/json" })
-    public ResponseEntity<List<Personaggio>> readPersonaggi() {
-        logger.info("RECEIVED GET /read-personaggi");
+    @RequestMapping(method = RequestMethod.GET, value = "/read-personaggi/{chiaveCampionato}", produces = { "application/json" })
+    public ResponseEntity<List<Personaggio>> readPersonaggi(@PathVariable("chiaveCampionato") String chiaveCampionato) {
+        logger.info("RECEIVED GET /read-personaggi/" + chiaveCampionato);
 
-        return ResponseEntity.ok(personaggiService.readPersonaggi());
+        return ResponseEntity.ok(personaggiService.readPersonaggi(chiaveCampionato));
     }
 
 }

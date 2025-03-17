@@ -22,8 +22,8 @@ public class AzioniService extends BaseService {
         return azioniRepository.findById(chiave).orElse(null);
     }
 
-    public List<Azione> realAll() {
-        return azioniRepository.findAll();
+    public List<Azione> realAll(String chiaveCampionato) {
+        return azioniRepository.findByChiaveCampionato(chiaveCampionato);
     }
 
     @Transactional

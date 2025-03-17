@@ -20,7 +20,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(origins = "https://customfanta.github.io", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://customfanta.github.io", "http://localhost:8080"}, allowCredentials = "true", allowedHeaders = "*")
 public class CampionatiController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(CampionatiController.class.getName());

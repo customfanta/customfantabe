@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(origins = "https://customfanta.github.io", allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://customfanta.github.io", "http://localhost:8080"}, allowCredentials = "true", allowedHeaders = "*")
 public class AzioniController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(AzioniController.class.getName());
@@ -44,10 +44,10 @@ public class AzioniController extends BaseController {
                     })
             }
     )
-    @RequestMapping(method = RequestMethod.GET, value = "/read-all-azioni", produces = { "application/json" })
-    public ResponseEntity<List<Azione>> readAzioni() {
-        logger.info("RECEIVED GET /read-all-azioni");
-        return ResponseEntity.ok(azioniService.realAll());
+    @RequestMapping(method = RequestMethod.GET, value = "/read-all-azioni/{chiaveCampionato}", produces = { "application/json" })
+    public ResponseEntity<List<Azione>> readAzioni(@PathVariable("chiaveCampionato") String chiaveCampionato) {
+        logger.info("RECEIVED GET /read-all-azioni/" + chiaveCampionato);
+        return ResponseEntity.ok(azioniService.realAll(chiaveCampionato));
     }
 
     @Operation(
@@ -58,8 +58,9 @@ public class AzioniController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/create-azione", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> createAzione(@RequestBody Azione azione, @RequestHeader("profilo") String profilo) throws URISyntaxException {
+    public ResponseEntity<Esito> createAzione(@RequestBody Azione azione) throws URISyntaxException {
         logger.info("RECEIVED POST /create-azione");
+        azione.setChiave(String.format("%s%s", azione.getChiaveCampionato(), azione.getAzione()));
         azioniService.saveAzione(azione);
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }

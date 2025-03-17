@@ -11,7 +11,7 @@ public class CustomfantaBeWebSocketConfiguration implements WebSocketMessageBrok
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-endpoint")
-                .setAllowedOrigins("https://customfanta.github.io")
+                .setAllowedOrigins("https://customfanta.github.io", "http://localhost:8080")
                 .withSockJS();
     }
 
