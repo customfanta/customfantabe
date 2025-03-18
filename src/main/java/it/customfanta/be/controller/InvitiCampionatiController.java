@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
 import it.customfanta.be.repository.CampionatiRepository;
 import it.customfanta.be.repository.InvitiCampionatiRepository;
+import it.customfanta.be.repository.UtentiCampionatiRepository;
 import it.customfanta.be.repository.UtentiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,9 @@ public class InvitiCampionatiController extends BaseController {
 
     @Autowired
     private CampionatiRepository campionatiRepository;
+
+    @Autowired
+    private UtentiCampionatiRepository utentiCampionatiRepository;
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -152,6 +156,33 @@ public class InvitiCampionatiController extends BaseController {
         }
 
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/accetta-invito/{chiaveInvito}", produces = { "application/json" })
+    public ResponseEntity<Esito> accettaInvito(@PathVariable("chiaveInvito") String chiaveInvito) {
+        logger.info("RECEIVED GET /accetta-invito" + chiaveInvito);
+
+        InvitoCampionato invito = invitiCampionatiRepository.findById(chiaveInvito).get();
+
+        UtenteCampionato utenteCampionato = new UtenteCampionato();
+        utenteCampionato.setChiave(String.format("%s%s", invito.getChiaveCampionato(), invito.getUsernameUtenteInvitato()));
+        utenteCampionato.setChiaveCampionato(invito.getChiaveCampionato());
+        utenteCampionato.setUsernameUtente(invito.getUsernameUtenteInvitato());
+        utenteCampionato.setRuoloUtente(invito.getRuoloInvito());
+        utentiCampionatiRepository.save(utenteCampionato);
+
+        invitiCampionatiRepository.deleteById(chiaveInvito);
+
+        simpMessagingTemplate.convertAndSend("/topic/nuovo-utente-in-campionato/" + invito.getChiaveCampionato(), "NUOVO UTENTE IN CAMPIONATO");
+
+        return ResponseEntity.ok(new Esito("OK"));
     }
 
 }
