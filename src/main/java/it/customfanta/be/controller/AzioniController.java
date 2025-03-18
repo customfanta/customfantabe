@@ -73,7 +73,7 @@ public class AzioniController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/add-azione-to-personaggio", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> addAzionePersonaggio(@RequestBody AzionePersonaggio azionePersonaggio, @RequestHeader("profilo") String profilo) throws URISyntaxException {
+    public ResponseEntity<Esito> addAzionePersonaggio(@RequestBody AzionePersonaggio azionePersonaggio) throws URISyntaxException {
         logger.info("RECEIVED POST /add-azione-to-personaggio");
         String dataEsecuzione = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         azionePersonaggio.setDataEsecuzione(dataEsecuzione);

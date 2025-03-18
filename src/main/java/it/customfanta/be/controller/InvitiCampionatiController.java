@@ -84,6 +84,7 @@ public class InvitiCampionatiController extends BaseController {
 
             invitoCampionatoResponse.setChiave(invitoCampionato.getChiave());
             invitoCampionatoResponse.setCampionato(campionatiRepository.findById(invitoCampionato.getChiaveCampionato()).get());
+            invitoCampionatoResponse.setUsernameUtenteInvitato(invitoCampionato.getUsernameUtenteInvitato());
             invitoCampionatoResponse.setUsernameUtenteCheHaInvitato(invitoCampionato.getUsernameUtenteCheHaInvitato());
             invitoCampionatoResponse.setRuoloInvito(invitoCampionato.getRuoloInvito());
 
@@ -113,6 +114,37 @@ public class InvitiCampionatiController extends BaseController {
 
             invitoCampionatoResponse.setChiave(invitoCampionato.getChiave());
             invitoCampionatoResponse.setCampionato(campionatiRepository.findById(invitoCampionato.getChiaveCampionato()).get());
+            invitoCampionatoResponse.setUsernameUtenteInvitato(invitoCampionato.getUsernameUtenteInvitato());
+            invitoCampionatoResponse.setUsernameUtenteCheHaInvitato(invitoCampionato.getUsernameUtenteCheHaInvitato());
+            invitoCampionatoResponse.setRuoloInvito(invitoCampionato.getRuoloInvito());
+
+            response.add(invitoCampionatoResponse);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = InvitoCampionatoResponse.class)))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/read-inviti-campionato/{chiaveCampionato}", produces = { "application/json" })
+    public ResponseEntity<List<InvitoCampionatoResponse>> readInvitiCampionato(@PathVariable("chiaveCampionato") String chiaveCampionato) {
+        logger.info("RECEIVED GET /read-inviti-campionato/" + chiaveCampionato);
+
+        List<InvitoCampionato> findMyInvitiInviati = invitiCampionatiRepository.findByChiaveCampionato(chiaveCampionato);
+
+        List<InvitoCampionatoResponse> response = new ArrayList<>();
+
+        for(InvitoCampionato invitoCampionato : findMyInvitiInviati) {
+            InvitoCampionatoResponse invitoCampionatoResponse = new InvitoCampionatoResponse();
+
+            invitoCampionatoResponse.setChiave(invitoCampionato.getChiave());
+//            invitoCampionatoResponse.setCampionato(campionatiRepository.findById(invitoCampionato.getChiaveCampionato()).get());
+            invitoCampionatoResponse.setUsernameUtenteInvitato(invitoCampionato.getUsernameUtenteInvitato());
             invitoCampionatoResponse.setUsernameUtenteCheHaInvitato(invitoCampionato.getUsernameUtenteCheHaInvitato());
             invitoCampionatoResponse.setRuoloInvito(invitoCampionato.getRuoloInvito());
 
