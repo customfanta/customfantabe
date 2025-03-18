@@ -25,9 +25,9 @@ import java.util.logging.Logger;
 
 @RestController
 @CrossOrigin(origins = {"https://customfanta.github.io", "http://localhost:8080"}, allowCredentials = "true", allowedHeaders = "*")
-public class UsersController extends BaseController {
+public class UtentiController extends BaseController {
 
-    private static final Logger logger = Logger.getLogger(UsersController.class.getName());
+    private static final Logger logger = Logger.getLogger(UtentiController.class.getName());
 
     @Autowired
     private UtentiService utentiService;
