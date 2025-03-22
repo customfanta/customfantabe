@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.Utente;
+import it.customfanta.be.model.request.MakeLoginRequest;
 import it.customfanta.be.security.MD5Security;
 import it.customfanta.be.service.MailService;
 import it.customfanta.be.service.UtentiService;
@@ -71,9 +72,14 @@ public class UtentiController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/make-login", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Utente> makeLogin(@RequestBody Utente utenteLogin) {
+    public ResponseEntity<Utente> makeLogin(@RequestBody MakeLoginRequest utenteLogin) {
         logger.info("RECEIVED POST /make-login");
-        Utente utente = utentiService.findUtente(utenteLogin);
+
+        Utente search = new Utente();
+        search.setMail(utenteLogin.getUsernameMail());
+        search.setUsername(utenteLogin.getUsernameMail());
+
+        Utente utente = utentiService.findUtente(search);
         if(utente != null) {
             if(MD5Security.getMD5Pass(utenteLogin.getPassword()).equals(utente.getPassword())) {
                 utente.setPassword(null);
