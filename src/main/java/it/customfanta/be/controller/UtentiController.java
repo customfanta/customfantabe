@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(origins = {"https://customfanta.github.io", "http://localhost:8080"}, allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(originPatterns = {"*"}, allowCredentials = "true", allowedHeaders = "*")
 public class UtentiController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(UtentiController.class.getName());
