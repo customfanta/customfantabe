@@ -154,6 +154,21 @@ public class UtentiController extends BaseController {
 
         mailService.sendMail(utente.getMail(), "FantaCustom - Certifica la Mail", "Clicca il seguente link per certificare la tua mail:\nhttps://customfantabe.onrender.com/certifica-mail/"+uuidMailCertificazione);
 
+        String jwt = Jwts.builder().subject(utente.getUsername()).claim("username", utente.getUsername()).claim("nome", utente.getNome()).claim("mail", utente.getMail()).claim("mailCertificata", utente.getMailCertificata() ? "SI" : "NO")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 14400000))
+                .compact();
+
+        ResponseCookie responseCookie = ResponseCookie.from("user-jwt", jwt)
+                .maxAge(Duration.ofHours(4))
+                .path("/")
+                .secure(true)
+                .httpOnly(false)
+                .sameSite("None")
+                .build();
+
+        httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
+
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }
 
