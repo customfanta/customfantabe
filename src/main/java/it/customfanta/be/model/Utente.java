@@ -17,4 +17,7 @@ public class Utente {
     private String mail;
     private String password;
 
+    private Boolean mailCertificata;
+    private String uuidMailCertificazione;
+
 }

@@ -22,6 +22,10 @@ public class UtentiService extends BaseService {
         return utentiRepository.findByUsernameOrMail(findUtenteRequest.getUsername(), findUtenteRequest.getMail()).orElse(null);
     }
 
+    public Utente findUtenteByUUIDMail(String uuidMailCertificazione) {
+        return utentiRepository.findByUuidMailCertificazione(uuidMailCertificazione).orElse(null);
+    }
+
     public List<Utente> findAll() {
         return utentiRepository.findAll();
     }

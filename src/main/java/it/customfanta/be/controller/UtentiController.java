@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.Utente;
 import it.customfanta.be.security.MD5Security;
+import it.customfanta.be.service.MailService;
 import it.customfanta.be.service.UtentiService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +22,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.Date;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @RestController
-@CrossOrigin(originPatterns = {"*"}, allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://customfanta.github.io"}, allowCredentials = "true", allowedHeaders = "*")
 public class UtentiController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(UtentiController.class.getName());
 
     @Autowired
     private UtentiService utentiService;
+
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     private HttpServletResponse httpServletResponse;
@@ -135,8 +140,35 @@ public class UtentiController extends BaseController {
             return ResponseEntity.badRequest().build();
         }
         utente.setPassword(MD5Security.getMD5Pass(utente.getPassword()));
+        utente.setMailCertificata(false);
+        String uuidMailCertificazione = UUID.randomUUID().toString();
+        utente.setUuidMailCertificazione(uuidMailCertificazione);
         utentiService.saveUtente(utente);
+
+        mailService.sendMail(utente.getMail(), "FantaCustom - Certifica la Mail", "Clicca il seguente link per certificare la tua mail:\nhttps://customfantabe.onrender.com/certifica-mail/"+uuidMailCertificazione);
+
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
+    }
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/certifica-mail/{uuidMailCertificazione}", produces = { "application/json" })
+    public ResponseEntity<Esito> certificaMail(@PathVariable("uuidMailCertificazione") String uuidMailCertificazione) {
+        logger.info("RECEIVED GET /certifica-mail/"+uuidMailCertificazione);
+
+        Utente utente = utentiService.findUtenteByUUIDMail(uuidMailCertificazione);
+        if(utente != null) {
+            utente.setUuidMailCertificazione(null);
+            utente.setMailCertificata(true);
+            utentiService.saveUtente(utente);
+        }
+
+        return ResponseEntity.ok(new Esito("OK"));
     }
 
 }
