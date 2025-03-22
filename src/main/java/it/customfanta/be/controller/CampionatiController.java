@@ -106,5 +106,45 @@ public class CampionatiController extends BaseController {
 
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }
-    
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/make-utente-admin/{usernameUtente}/{chiaveCampionato}", produces = { "application/json" })
+    public ResponseEntity<Esito> makeUtenteAdmin(@PathVariable("usernameUtente") String usernameUtente, @PathVariable("chiaveCampionato") String chiaveCampionato) {
+        logger.info("RECEIVED POST /make-utente-admin/" + usernameUtente + "/" + chiaveCampionato);
+
+        UtenteCampionato utenteCampionato = new UtenteCampionato();
+        utenteCampionato.setChiave(String.format("%s%s", chiaveCampionato, usernameUtente));
+        utenteCampionato.setChiaveCampionato(chiaveCampionato);
+        utenteCampionato.setUsernameUtente(usernameUtente);
+        utenteCampionato.setRuoloUtente("ADMIN");
+        utentiCampionatiService.save(utenteCampionato);
+
+        return ResponseEntity.ok(new Esito("OK"));
+    }
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/rimuovi-utente-campionato/{usernameUtente}/{chiaveCampionato}", produces = { "application/json" })
+    public ResponseEntity<Esito> rimuoviUtenteCampionato(@PathVariable("usernameUtente") String usernameUtente, @PathVariable("chiaveCampionato") String chiaveCampionato) {
+        logger.info("RECEIVED POST /rimuovi-utente-campionato/" + usernameUtente + "/" + chiaveCampionato);
+
+        if("OWNER".equals(utentiCampionatiService.findByChiave(String.format("%s%s", chiaveCampionato, usernameUtente)).getRuoloUtente())) {
+            return ResponseEntity.ok(new Esito("KO"));
+        }
+        utentiCampionatiService.deleteByChiave(String.format("%s%s", chiaveCampionato, usernameUtente));
+
+        return ResponseEntity.ok(new Esito("OK"));
+    }
+
 }

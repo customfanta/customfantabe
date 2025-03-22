@@ -16,6 +16,10 @@ public class UtentiCampionatiService extends BaseService {
     @Autowired
     private UtentiCampionatiRepository utentiCampionatiRepository;
 
+    public UtenteCampionato findByChiave(String chiave) {
+        return utentiCampionatiRepository.findById(chiave).orElse(null);
+    }
+
     public List<UtenteCampionato> findByUsernameUtente(String usernameUtente) {
         return utentiCampionatiRepository.findByUsernameUtente(usernameUtente);
     }
