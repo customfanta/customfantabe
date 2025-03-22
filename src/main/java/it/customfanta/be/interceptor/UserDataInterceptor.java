@@ -31,6 +31,7 @@ public class UserDataInterceptor implements HandlerInterceptor {
             userData.setUsername("AntoTest");
             userData.setNome("AntoTestName");
             userData.setMail("AntoTestMail");
+            userData.setMailCertificata(true);
             userData.setLogged(true);
         } else {
             Cookie[] cookies = request.getCookies();
@@ -43,6 +44,7 @@ public class UserDataInterceptor implements HandlerInterceptor {
                         userData.setUsername(String.valueOf(payload.get("username")));
                         userData.setNome(String.valueOf(payload.get("nome")));
                         userData.setMail(String.valueOf(payload.get("mail")));
+                        userData.setMailCertificata("SI".equals(String.valueOf(payload.get("mailCertificata"))));
                         userData.setLogged(true);
                         return true;
                     }

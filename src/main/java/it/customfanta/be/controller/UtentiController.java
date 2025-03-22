@@ -59,6 +59,7 @@ public class UtentiController extends BaseController {
         Utente utente = new Utente();
         utente.setUsername(userData.getUsername());
         utente.setMail(userData.getMail());
+        utente.setMailCertificata(userData.isMailCertificata());
         utente.setNome(userData.getNome());
 
         return ResponseEntity.ok(utente);
@@ -84,7 +85,7 @@ public class UtentiController extends BaseController {
             if(MD5Security.getMD5Pass(utenteLogin.getPassword()).equals(utente.getPassword())) {
                 utente.setPassword(null);
 
-                String jwt = Jwts.builder().subject(utente.getUsername()).claim("username", utente.getUsername()).claim("nome", utente.getNome()).claim("mail", utente.getMail())
+                String jwt = Jwts.builder().subject(utente.getUsername()).claim("username", utente.getUsername()).claim("nome", utente.getNome()).claim("mail", utente.getMail()).claim("mailCertificata", utente.getMailCertificata() ? "SI" : "NO")
                         .issuedAt(new Date())
                         .expiration(new Date(System.currentTimeMillis() + 14400000))
                         .compact();
