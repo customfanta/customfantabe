@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
 import it.customfanta.be.model.request.SquadraRequest;
+import it.customfanta.be.repository.PersonaggiRepository;
 import it.customfanta.be.service.AzioniPersonaggiService;
 import it.customfanta.be.service.AzioniService;
 import it.customfanta.be.service.SquadrePersonaggiService;
@@ -37,6 +38,9 @@ public class SquadreController extends BaseController {
 
     @Autowired
     private AzioniService azioniService;
+
+    @Autowired
+    private PersonaggiRepository personaggiRepository;
 
     @Operation(
             responses = {
@@ -95,7 +99,8 @@ public class SquadreController extends BaseController {
 
         for(SquadraPersonaggio squadraPersonaggio : squadraPersonaggi) {
             PersonaggioResponse personaggioResponse = new PersonaggioResponse();
-            personaggioResponse.setNomePersonaggio(squadraPersonaggio.getChiavePersonaggio());
+
+            personaggioResponse.setNomePersonaggio(personaggiRepository.findById(squadraPersonaggio.getChiavePersonaggio()).get().getNominativo());
 
             List<AzionePersonaggio> azioniPersonaggi = azioniPersonaggiService.readByChiavePersonaggio(squadraPersonaggio.getChiavePersonaggio());
             int punteggioPersonaggio = 0;
