@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.Utente;
+import it.customfanta.be.model.request.CreateUserRequest;
 import it.customfanta.be.model.request.MakeLoginRequest;
 import it.customfanta.be.security.MD5Security;
 import it.customfanta.be.service.MailService;
@@ -141,15 +142,22 @@ public class UtentiController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/create-user", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> createUser(@RequestBody Utente utente) throws URISyntaxException {
+    public ResponseEntity<Esito> createUser(@RequestBody CreateUserRequest createUserRequest) throws URISyntaxException {
         logger.info("RECEIVED POST /create-user");
+
+        Utente utente = new Utente();
+        utente.setUsername(createUserRequest.getUsername());
+        utente.setMail(createUserRequest.getMail());
         if(utentiService.findUtente(utente) != null) {
             return ResponseEntity.badRequest().build();
         }
-        utente.setPassword(MD5Security.getMD5Pass(utente.getPassword()));
+        utente.setPassword(MD5Security.getMD5Pass(createUserRequest.getPassword()));
+
         utente.setMailCertificata(false);
+
         String uuidMailCertificazione = UUID.randomUUID().toString();
         utente.setUuidMailCertificazione(uuidMailCertificazione);
+
         utentiService.saveUtente(utente);
 
         mailService.sendMail(utente.getMail(), "FantaCustom - Certifica la Mail", "Clicca il seguente link per certificare la tua mail:\nhttps://customfantabe.onrender.com/certifica-mail/"+uuidMailCertificazione);

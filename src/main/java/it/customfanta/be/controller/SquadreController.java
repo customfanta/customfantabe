@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
+import it.customfanta.be.model.request.SquadraRequest;
 import it.customfanta.be.service.AzioniPersonaggiService;
 import it.customfanta.be.service.AzioniService;
 import it.customfanta.be.service.SquadrePersonaggiService;
@@ -48,8 +49,12 @@ public class SquadreController extends BaseController {
     public ResponseEntity<Esito> createSquadra(@RequestBody CreaSquadraRequest creaSquadraRequest) throws URISyntaxException {
         logger.info("RECEIVED POST /crea-squadra");
 
-        Squadra squadra = creaSquadraRequest.getSquadra();
-        squadra.setChiave(String.format("%s%s%s", squadra.getChiaveCampionato(), userData.getUsername(), squadra.getNome()));
+        SquadraRequest squadraRequest = creaSquadraRequest.getSquadra();
+        Squadra squadra = new Squadra();
+        squadra.setNome(squadraRequest.getNome());
+        squadra.setDescrizione(squadraRequest.getDescrizione());
+        squadra.setChiaveCampionato(squadraRequest.getChiaveCampionato());
+        squadra.setChiave(String.format("%s%s%s", squadraRequest.getChiaveCampionato(), userData.getUsername(), squadraRequest.getNome()));
         squadra.setUsernameUtente(userData.getUsername());
         squadreService.saveSquadra(squadra);
 

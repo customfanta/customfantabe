@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
+import it.customfanta.be.model.request.CreaCampionatoRequest;
 import it.customfanta.be.service.CampionatiService;
 import it.customfanta.be.service.UtentiCampionatiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,11 +84,15 @@ public class CampionatiController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/crea-campionato", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> createCampionato(@RequestBody Campionato campionato) throws URISyntaxException {
+    public ResponseEntity<Esito> createCampionato(@RequestBody CreaCampionatoRequest creaCampionatoRequest) throws URISyntaxException {
         logger.info("RECEIVED POST /crea-campionato");
 
-        String chiaveCampionato = String.format("%s%s%s", campionato.getNome(), userData.getUsername(), UUID.randomUUID());
+        String chiaveCampionato = String.format("%s%s%s", creaCampionatoRequest.getNome(), userData.getUsername(), UUID.randomUUID());
 
+        Campionato campionato = new Campionato();
+
+        campionato.setNome(creaCampionatoRequest.getNome());
+        campionato.setDescrizione(creaCampionatoRequest.getDescrizione());
         campionato.setChiave(chiaveCampionato);
         campionato.setUsernameUtenteOwner(userData.getUsername());
         campionatiService.save(campionato);

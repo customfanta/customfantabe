@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.Personaggio;
+import it.customfanta.be.model.request.CreatePersonaggioRequest;
 import it.customfanta.be.service.PersonaggiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +35,18 @@ public class PersonaggiController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/create-personaggio", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> createPersonaggio(@RequestBody Personaggio personaggio) throws URISyntaxException {
+    public ResponseEntity<Esito> createPersonaggio(@RequestBody CreatePersonaggioRequest createPersonaggioRequest) throws URISyntaxException {
         logger.info("RECEIVED POST /create-personaggio");
-        personaggio.setChiave(String.format("%s%s", personaggio.getChiaveCampionato(), personaggio.getNominativo()));
+        Personaggio personaggio = new Personaggio();
+
+        personaggio.setNominativo(createPersonaggioRequest.getNominativo());
+        personaggio.setDescrizione(createPersonaggioRequest.getDescrizione());
+        personaggio.setCosto(createPersonaggioRequest.getCosto());
+        personaggio.setChiaveCampionato(createPersonaggioRequest.getChiaveCampionato());
+
+        personaggio.setChiave(String.format("%s%s", createPersonaggioRequest.getChiaveCampionato(), createPersonaggioRequest.getNominativo()));
         personaggiService.savePersonaggio(personaggio);
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
-
     }
 
     @Operation(

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
+import it.customfanta.be.model.request.InvitaUtenteRequest;
 import it.customfanta.be.repository.CampionatiRepository;
 import it.customfanta.be.repository.InvitiCampionatiRepository;
 import it.customfanta.be.repository.UtentiCampionatiRepository;
@@ -51,14 +52,19 @@ public class InvitiCampionatiController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/invita-utente", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> invitaUtente(@RequestBody InvitoCampionato invitoCampionato) throws URISyntaxException {
+    public ResponseEntity<Esito> invitaUtente(@RequestBody InvitaUtenteRequest invitaUtenteRequest) throws URISyntaxException {
         logger.info("RECEIVED POST /invita-utente");
 
-        Optional<Utente> utenteInvitato = utentiRepository.findByUsername(invitoCampionato.getUsernameUtenteInvitato());
+        Optional<Utente> utenteInvitato = utentiRepository.findByUsername(invitaUtenteRequest.getUsernameUtenteInvitato());
 
         if(utenteInvitato.isPresent()) {
+            InvitoCampionato invitoCampionato = new InvitoCampionato();
+
+            invitoCampionato.setUsernameUtenteInvitato(invitaUtenteRequest.getUsernameUtenteInvitato());
+            invitoCampionato.setRuoloInvito(invitaUtenteRequest.getRuoloInvito());
+            invitoCampionato.setChiaveCampionato(invitaUtenteRequest.getChiaveCampionato());
             invitoCampionato.setUsernameUtenteCheHaInvitato(userData.getUsername());
-            invitoCampionato.setChiave(String.format("%s%s%s%s", userData.getUsername(), invitoCampionato.getUsernameUtenteInvitato(), invitoCampionato.getChiaveCampionato(), invitoCampionato.getRuoloInvito()));
+            invitoCampionato.setChiave(String.format("%s%s%s%s", userData.getUsername(), invitaUtenteRequest.getUsernameUtenteInvitato(), invitaUtenteRequest.getChiaveCampionato(), invitaUtenteRequest.getRuoloInvito()));
             invitiCampionatiRepository.save(invitoCampionato);
 
             simpMessagingTemplate.convertAndSend("/topic/nuovo-invito-ricevuto/" + invitoCampionato.getUsernameUtenteInvitato(), "NUOVO INVITO RICEVUTO");

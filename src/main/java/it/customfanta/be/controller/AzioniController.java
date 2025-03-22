@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.Azione;
 import it.customfanta.be.model.AzionePersonaggio;
 import it.customfanta.be.model.Esito;
+import it.customfanta.be.model.request.AddAzionePersonaggioRequest;
+import it.customfanta.be.model.request.CreateAzioneRequest;
 import it.customfanta.be.service.AzioniPersonaggiService;
 import it.customfanta.be.service.AzioniService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +60,16 @@ public class AzioniController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/create-azione", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> createAzione(@RequestBody Azione azione) throws URISyntaxException {
+    public ResponseEntity<Esito> createAzione(@RequestBody CreateAzioneRequest createAzioneRequest) throws URISyntaxException {
         logger.info("RECEIVED POST /create-azione");
-        azione.setChiave(String.format("%s%s", azione.getChiaveCampionato(), azione.getAzione()));
+        Azione azione = new Azione();
+        azione.setChiave(String.format("%s%s", createAzioneRequest.getChiaveCampionato(), createAzioneRequest.getAzione()));
+
+        azione.setAzione(createAzioneRequest.getAzione());
+        azione.setPunteggio(createAzioneRequest.getPunteggio());
+        azione.setChiaveCampionato(createAzioneRequest.getChiaveCampionato());
+        azione.setDescrizione(createAzioneRequest.getDescrizione());
+
         azioniService.saveAzione(azione);
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }
@@ -73,11 +82,14 @@ public class AzioniController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/add-azione-to-personaggio", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> addAzionePersonaggio(@RequestBody AzionePersonaggio azionePersonaggio) throws URISyntaxException {
+    public ResponseEntity<Esito> addAzionePersonaggio(@RequestBody AddAzionePersonaggioRequest addAzionePersonaggioRequest) throws URISyntaxException {
         logger.info("RECEIVED POST /add-azione-to-personaggio");
+        AzionePersonaggio azionePersonaggio = new AzionePersonaggio();
         String dataEsecuzione = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
         azionePersonaggio.setDataEsecuzione(dataEsecuzione);
-        azionePersonaggio.setChiave(String.format("%s%s%s", azionePersonaggio.getChiavePersonaggio(), azionePersonaggio.getChiaveAzione(), dataEsecuzione));
+        azionePersonaggio.setChiave(String.format("%s%s%s", addAzionePersonaggioRequest.getChiavePersonaggio(), addAzionePersonaggioRequest.getChiaveAzione(), dataEsecuzione));
+        azionePersonaggio.setChiaveAzione(addAzionePersonaggioRequest.getChiaveAzione());
+        azionePersonaggio.setChiavePersonaggio(addAzionePersonaggioRequest.getChiavePersonaggio());
         azioniPersonaggiService.saveAzionePersonaggio(azionePersonaggio);
 
         simpMessagingTemplate.convertAndSend("/topic/azione-personaggio-aggiunta", "AGGIORNATA AZIONE PERSONAGGIO");
