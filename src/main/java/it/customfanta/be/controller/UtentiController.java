@@ -173,6 +173,8 @@ public class UtentiController extends BaseController {
             utente.setUuidMailCertificazione(null);
             utente.setMailCertificata(true);
             utentiService.saveUtente(utente);
+        } else {
+            return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(new Esito("OK"));
