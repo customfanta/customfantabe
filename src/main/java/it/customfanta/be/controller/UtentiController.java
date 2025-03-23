@@ -216,7 +216,7 @@ public class UtentiController extends BaseController {
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "200", content = {
-                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Utente.class)))
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UsernameUser.class)))
                     })
             }
     )
