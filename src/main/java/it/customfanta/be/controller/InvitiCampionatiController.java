@@ -70,7 +70,7 @@ public class InvitiCampionatiController extends BaseController {
             simpMessagingTemplate.convertAndSend("/topic/nuovo-invito-ricevuto/" + invitoCampionato.getUsernameUtenteInvitato(), "NUOVO INVITO RICEVUTO");
             return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(new Esito("KO"));
         }
     }
 

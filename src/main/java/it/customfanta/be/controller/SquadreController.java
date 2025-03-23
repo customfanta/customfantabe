@@ -88,7 +88,7 @@ public class SquadreController extends BaseController {
 
         Squadra squadra = squadreService.readSquadraByUtente(usernameUtente, chiaveCampionato);
         if(squadra == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(null);
         }
 
         readSquadraResponse.setSquadra(squadra);
@@ -134,7 +134,7 @@ public class SquadreController extends BaseController {
 
         Squadra squadra = squadreService.readSquadraByUtente(usernameUtente, chiaveCampionato);
         if(squadra == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(new Esito("KO"));
         }
 
         List<SquadraPersonaggio> squadraPersonaggi = squadrePersonaggiService.readByChiaveSquadra(squadra.getChiave());
