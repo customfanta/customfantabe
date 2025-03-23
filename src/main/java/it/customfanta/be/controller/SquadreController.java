@@ -96,6 +96,7 @@ public class SquadreController extends BaseController {
 
         ReadSquadraResponse readSquadraResponse = new ReadSquadraResponse();
 
+        readSquadraResponse.setLaMiaSquadra(true);
         readSquadraResponse.setSquadra(squadra);
 
         List<PersonaggioResponse> personaggiResponse = new ArrayList<>();
@@ -167,6 +168,10 @@ public class SquadreController extends BaseController {
         List<ReadSquadraResponse> response = new ArrayList<>();
         for(Squadra squadra : squadre) {
             ReadSquadraResponse readSquadraResponse = new ReadSquadraResponse();
+
+            if(userData.getUsername().equals(squadra.getUsernameUtente())) {
+                readSquadraResponse.setLaMiaSquadra(true);
+            }
 
             readSquadraResponse.setSquadra(squadra);
 
