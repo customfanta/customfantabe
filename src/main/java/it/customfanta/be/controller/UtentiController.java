@@ -16,6 +16,7 @@ import it.customfanta.be.service.MailService;
 import it.customfanta.be.service.UtentiService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -210,9 +211,6 @@ public class UtentiController extends BaseController {
         return new RedirectView("https://customfanta.github.io/certifica-mail-ok.html");
     }
 
-
-
-
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "200", content = {
@@ -224,7 +222,22 @@ public class UtentiController extends BaseController {
     public ResponseEntity<List<UsernameUser>> ricercaUtente(@RequestParam(value = "searchParam") String searchParam) {
         logger.info("RECEIVED GET /ricerca-utente?searchParam=" + searchParam);
 
-        return ResponseEntity.ok(utentiRepository.findByUsernameContainingIgnoreCaseOrNomeContainingIgnoreCaseOrMailContainingIgnoreCase(searchParam, searchParam, searchParam));
+        List<UsernameUser> searchResult = utentiRepository.findByUsernameContainingIgnoreCaseOrNomeContainingIgnoreCaseOrMailContainingIgnoreCase(searchParam, searchParam, searchParam, PageRequest.of(0, 5));
+        int idx = 0;
+        int myIdx = -1;
+        for(UsernameUser username : searchResult) {
+            if(username.getUsername().equals(userData.getUsername())) {
+                myIdx = idx;
+                break;
+            }
+            idx++;
+        }
+
+        if(myIdx != -1) {
+            searchResult.remove(myIdx);
+        }
+
+        return ResponseEntity.ok(searchResult);
     }
 
 }

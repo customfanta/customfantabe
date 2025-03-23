@@ -2,6 +2,7 @@ package it.customfanta.be.repository;
 
 import it.customfanta.be.controller.UsernameUser;
 import it.customfanta.be.model.Utente;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +16,5 @@ public interface UtentiRepository extends JpaRepository<Utente, String> {
     Optional<Utente> findByUsername(String username);
     Optional<Utente> findByUuidMailCertificazione(String uuidMailCertificazione);
 
-    List<UsernameUser> findByUsernameContainingIgnoreCaseOrNomeContainingIgnoreCaseOrMailContainingIgnoreCase(String username, String nome, String mail);
+    List<UsernameUser> findByUsernameContainingIgnoreCaseOrNomeContainingIgnoreCaseOrMailContainingIgnoreCase(String username, String nome, String mail, Pageable pageable);
 }
