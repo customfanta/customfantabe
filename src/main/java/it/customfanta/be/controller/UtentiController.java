@@ -54,7 +54,7 @@ public class UtentiController extends BaseController {
         logger.info("RECEIVED GET /get-utente-loggato");
 
         if(!userData.isLogged()) {
-            return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+            return ResponseEntity.ok(null);
         }
 
         Utente utente = new Utente();
@@ -103,10 +103,10 @@ public class UtentiController extends BaseController {
 
                 return ResponseEntity.ok(utente);
             } else {
-                return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+                return ResponseEntity.ok(null);
             }
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(null);
         }
     }
 
@@ -197,7 +197,7 @@ public class UtentiController extends BaseController {
             utente.setMailCertificata(true);
             utentiService.saveUtente(utente);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(new Esito("KO"));
         }
 
         return ResponseEntity.ok(new Esito("OK"));
