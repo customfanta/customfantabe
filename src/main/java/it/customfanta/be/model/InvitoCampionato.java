@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "squadre")
+@Table(name = "inviti_campionato")
 @Data
 public class InvitoCampionato {
 
