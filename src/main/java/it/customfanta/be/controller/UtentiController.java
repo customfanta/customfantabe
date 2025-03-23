@@ -2,6 +2,7 @@ package it.customfanta.be.controller;
 
 import io.jsonwebtoken.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,13 +10,13 @@ import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.Utente;
 import it.customfanta.be.model.request.CreateUserRequest;
 import it.customfanta.be.model.request.MakeLoginRequest;
+import it.customfanta.be.repository.UtentiRepository;
 import it.customfanta.be.security.MD5Security;
 import it.customfanta.be.service.MailService;
 import it.customfanta.be.service.UtentiService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -36,6 +38,9 @@ public class UtentiController extends BaseController {
 
     @Autowired
     private UtentiService utentiService;
+
+    @Autowired
+    private UtentiRepository utentiRepository;
 
     @Autowired
     private MailService mailService;
@@ -148,6 +153,7 @@ public class UtentiController extends BaseController {
 
         Utente utente = new Utente();
         utente.setUsername(createUserRequest.getUsername());
+        utente.setNome(createUserRequest.getNome());
         utente.setMail(createUserRequest.getMail());
         if(utentiService.findUtente(utente) != null) {
             return ResponseEntity.badRequest().build();
@@ -202,6 +208,23 @@ public class UtentiController extends BaseController {
         }
 
         return new RedirectView("https://customfanta.github.io/certifica-mail-ok.html");
+    }
+
+
+
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Utente.class)))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/ricerca-utente", produces = { "application/json" })
+    public ResponseEntity<List<UsernameUser>> ricercaUtente(@RequestParam(value = "searchParam") String searchParam) {
+        logger.info("RECEIVED GET /ricerca-utente?searchParam=" + searchParam);
+
+        return ResponseEntity.ok(utentiRepository.findByUsernameContainingIgnoreCaseOrNomeContainingIgnoreCaseOrMailContainingIgnoreCase(searchParam, searchParam, searchParam));
     }
 
 }

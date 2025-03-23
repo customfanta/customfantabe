@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class MailService {
 
+    @Value("${testing}")
+    private boolean testing;
+
     @Value("${spring.mail.username}")
     private String mailFrom;
 
@@ -16,14 +19,16 @@ public class MailService {
     private JavaMailSender javaMailSender;
 
     public void sendMail(String to, String oggetto, String testo) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        if(!testing) {
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
-        simpleMailMessage.setFrom(mailFrom);
-        simpleMailMessage.setTo(to);
-        simpleMailMessage.setSubject(oggetto);
-        simpleMailMessage.setText(testo);
+            simpleMailMessage.setFrom(mailFrom);
+            simpleMailMessage.setTo(to);
+            simpleMailMessage.setSubject(oggetto);
+            simpleMailMessage.setText(testo);
 
-        javaMailSender.send(simpleMailMessage);
+            javaMailSender.send(simpleMailMessage);
+        }
     }
 
 }
