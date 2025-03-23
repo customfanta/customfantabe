@@ -198,10 +198,10 @@ public class UtentiController extends BaseController {
             utente.setMailCertificata(true);
             utentiService.saveUtente(utente);
         } else {
-            return new RedirectView("https://customfanta.github.io/certifica-mail-failure.html");
+            return new RedirectView("https://customfanta.github.io/certifica-mail-ko.html");
         }
 
-        return new RedirectView("https://customfanta.github.io/index.html");
+        return new RedirectView("https://customfanta.github.io/certifica-mail-ok.html");
     }
 
 }
