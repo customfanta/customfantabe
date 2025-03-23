@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.Esito;
 import it.customfanta.be.service.*;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -103,6 +104,7 @@ public class DropTableController extends BaseController {
     }
 
     @Operation(responses = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))})})
+    @Transactional
     @RequestMapping(method = RequestMethod.GET, value = "/drop-inviti-campionati", produces = { "application/json" })
     public ResponseEntity<Esito> dropInvitiCampionati() {
         entityManager.createNativeQuery("DROP TABLE IF EXISTS inviti_campionato")
@@ -111,6 +113,7 @@ public class DropTableController extends BaseController {
     }
 
     @Operation(responses = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))})})
+    @Transactional
     @RequestMapping(method = RequestMethod.GET, value = "/drop-configurazioni-campionati", produces = { "application/json" })
     public ResponseEntity<Esito> dropConfigurazioniCampionati() {
         entityManager.createNativeQuery("DROP TABLE IF EXISTS configurazioni_campionati")
