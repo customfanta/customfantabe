@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -188,7 +189,7 @@ public class UtentiController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.GET, value = "/certifica-mail/{uuidMailCertificazione}", produces = { "application/json" })
-    public ResponseEntity<Esito> certificaMail(@PathVariable("uuidMailCertificazione") String uuidMailCertificazione) {
+    public RedirectView certificaMail(@PathVariable("uuidMailCertificazione") String uuidMailCertificazione) {
         logger.info("RECEIVED GET /certifica-mail/"+uuidMailCertificazione);
 
         Utente utente = utentiService.findUtenteByUUIDMail(uuidMailCertificazione);
@@ -197,10 +198,10 @@ public class UtentiController extends BaseController {
             utente.setMailCertificata(true);
             utentiService.saveUtente(utente);
         } else {
-            return ResponseEntity.ok(new Esito("KO"));
+            return new RedirectView("https://customfanta.github.io/certifica-mail-failure.html");
         }
 
-        return ResponseEntity.ok(new Esito("OK"));
+        return new RedirectView("https://customfanta.github.io/index.html");
     }
 
 }
