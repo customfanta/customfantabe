@@ -1,12 +1,14 @@
 package it.customfanta.be.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
 import it.customfanta.be.model.request.SquadraRequest;
 import it.customfanta.be.repository.PersonaggiRepository;
+import it.customfanta.be.repository.SquadreRepository;
 import it.customfanta.be.service.AzioniPersonaggiService;
 import it.customfanta.be.service.AzioniService;
 import it.customfanta.be.service.SquadrePersonaggiService;
@@ -29,6 +31,9 @@ public class SquadreController extends BaseController {
 
     @Autowired
     private SquadreService squadreService;
+
+    @Autowired
+    private SquadreRepository squadreRepository;
 
     @Autowired
     private SquadrePersonaggiService squadrePersonaggiService;
@@ -84,12 +89,12 @@ public class SquadreController extends BaseController {
     public ResponseEntity<ReadSquadraResponse> readSquadra(@PathVariable("usernameUtente") String usernameUtente, @PathVariable("chiaveCampionato") String chiaveCampionato) {
         logger.info("RECEIVED GET /read-squadra/" + usernameUtente + "/" + chiaveCampionato);
 
-        ReadSquadraResponse readSquadraResponse = new ReadSquadraResponse();
-
         Squadra squadra = squadreService.readSquadraByUtente(usernameUtente, chiaveCampionato);
         if(squadra == null) {
             return ResponseEntity.ok(null);
         }
+
+        ReadSquadraResponse readSquadraResponse = new ReadSquadraResponse();
 
         readSquadraResponse.setSquadra(squadra);
 
@@ -144,6 +149,56 @@ public class SquadreController extends BaseController {
 
         squadreService.deleteSquadraById(squadra.getChiave());
         return ResponseEntity.ok(new Esito("OK"));
+    }
+
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ReadSquadraResponse.class)))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/recupera-squadre-campionato/{chiaveCampionato}", produces = { "application/json" })
+    public ResponseEntity<List<ReadSquadraResponse>> recuperaSquadreCampionato(@PathVariable("chiaveCampionato") String chiaveCampionato) {
+        logger.info("RECEIVED GET /recupera-squadre-campionato/" + chiaveCampionato);
+
+        List<Squadra> squadre = squadreRepository.findByChiaveCampionato(chiaveCampionato);
+
+        List<ReadSquadraResponse> response = new ArrayList<>();
+        for(Squadra squadra : squadre) {
+            ReadSquadraResponse readSquadraResponse = new ReadSquadraResponse();
+
+            readSquadraResponse.setSquadra(squadra);
+
+            List<PersonaggioResponse> personaggiResponse = new ArrayList<>();
+
+            List<SquadraPersonaggio> squadraPersonaggi = squadrePersonaggiService.readByChiaveSquadra(squadra.getChiave());
+
+            for (SquadraPersonaggio squadraPersonaggio : squadraPersonaggi) {
+                PersonaggioResponse personaggioResponse = new PersonaggioResponse();
+
+                personaggioResponse.setNomePersonaggio(personaggiRepository.findById(squadraPersonaggio.getChiavePersonaggio()).get().getNominativo());
+
+                List<AzionePersonaggio> azioniPersonaggi = azioniPersonaggiService.readByChiavePersonaggio(squadraPersonaggio.getChiavePersonaggio());
+                int punteggioPersonaggio = 0;
+                for (AzionePersonaggio azionePersonaggio : azioniPersonaggi) {
+                    Azione azione = azioniService.readByChiave(azionePersonaggio.getChiaveAzione());
+                    if (azione != null) {
+                        punteggioPersonaggio += azione.getPunteggio();
+                    }
+                }
+
+                personaggioResponse.setPunteggioAttuale(punteggioPersonaggio);
+                personaggiResponse.add(personaggioResponse);
+            }
+
+            readSquadraResponse.setPersonaggi(personaggiResponse);
+            readSquadraResponse.setPunteggioSquadra(personaggiResponse.stream().mapToInt(PersonaggioResponse::getPunteggioAttuale).sum());
+
+            response.add(readSquadraResponse);
+        }
+
+        return ResponseEntity.ok(response);
     }
 
 }

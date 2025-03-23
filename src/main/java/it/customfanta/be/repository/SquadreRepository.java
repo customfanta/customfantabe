@@ -4,6 +4,7 @@ import it.customfanta.be.model.Squadra;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -11,5 +12,6 @@ import java.util.Optional;
 public interface SquadreRepository extends JpaRepository<Squadra, String> {
 
     Optional<Squadra> findByUsernameUtenteAndChiaveCampionato(String usernameUtente, String chiaveCampionato);
+    List<Squadra> findByChiaveCampionato(String chiaveCampionato);
 
 }
