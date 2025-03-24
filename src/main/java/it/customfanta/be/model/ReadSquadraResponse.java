@@ -11,5 +11,6 @@ public class ReadSquadraResponse {
     private Squadra squadra;
     private List<PersonaggioResponse> personaggi;
     private Integer punteggioSquadra;
+    private Integer posizioneClassifica;
 
 }

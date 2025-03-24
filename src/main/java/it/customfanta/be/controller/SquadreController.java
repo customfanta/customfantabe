@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -201,6 +202,11 @@ public class SquadreController extends BaseController {
             readSquadraResponse.setPunteggioSquadra(personaggiResponse.stream().mapToInt(PersonaggioResponse::getPunteggioAttuale).sum());
 
             response.add(readSquadraResponse);
+        }
+
+        response.sort((r1, r2) -> r2.getPunteggioSquadra().compareTo(r1.getPunteggioSquadra()));
+        for(int i = 1; i < response.size()+1; i++) {
+            response.get(i-1).setPosizioneClassifica(i);
         }
 
         return ResponseEntity.ok(response);
