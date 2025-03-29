@@ -191,4 +191,18 @@ public class InvitiCampionatiController extends BaseController {
         return ResponseEntity.ok(new Esito("OK"));
     }
 
+    @Operation(
+            responses = {
+                    @ApiResponse(responseCode = "200", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))
+                    })
+            }
+    )
+    @RequestMapping(method = RequestMethod.GET, value = "/rifiuta-invito/{chiaveInvito}", produces = { "application/json" })
+    public ResponseEntity<Esito> rifiutaInvito(@PathVariable("chiaveInvito") String chiaveInvito) {
+        logger.info("RECEIVED GET /rifiuta-invito" + chiaveInvito);
+        invitiCampionatiRepository.deleteById(chiaveInvito);
+        return ResponseEntity.ok(new Esito("OK"));
+    }
+
 }
