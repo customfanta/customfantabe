@@ -8,8 +8,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.Utente;
+import it.customfanta.be.model.UtenteCampionato;
 import it.customfanta.be.model.request.CreateUserRequest;
 import it.customfanta.be.model.request.MakeLoginRequest;
+import it.customfanta.be.repository.UtentiCampionatiRepository;
 import it.customfanta.be.repository.UtentiRepository;
 import it.customfanta.be.security.MD5Security;
 import it.customfanta.be.service.MailService;
@@ -26,10 +28,9 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = {"https://customfanta.github.io"}, allowCredentials = "true", allowedHeaders = "*")
@@ -42,6 +43,9 @@ public class UtentiController extends BaseController {
 
     @Autowired
     private UtentiRepository utentiRepository;
+
+    @Autowired
+    private UtentiCampionatiRepository utentiCampionatiRepository;
 
     @Autowired
     private MailService mailService;
@@ -218,23 +222,24 @@ public class UtentiController extends BaseController {
                     })
             }
     )
-    @RequestMapping(method = RequestMethod.GET, value = "/ricerca-utente", produces = { "application/json" })
-    public ResponseEntity<List<UsernameUser>> ricercaUtente(@RequestParam(value = "searchParam") String searchParam) {
-        logger.info("RECEIVED GET /ricerca-utente?searchParam=" + searchParam);
+    @RequestMapping(method = RequestMethod.GET, value = "/ricerca-utente/{chiaveCampionato}", produces = { "application/json" })
+    public ResponseEntity<List<UsernameUser>> ricercaUtente(@PathVariable("chiaveCampionato") String chiaveCampionato, @RequestParam(value = "searchParam") String searchParam) {
+        logger.info("RECEIVED GET /ricerca-utente/" + chiaveCampionato + "?searchParam=" + searchParam);
 
+        Set<String> usernameUtentiInCampionato = utentiCampionatiRepository.findByChiaveCampionato(chiaveCampionato).stream().map(UtenteCampionato::getUsernameUtente).collect(Collectors.toSet());
         List<UsernameUser> searchResult = utentiRepository.findByUsernameContainingIgnoreCaseOrNomeContainingIgnoreCaseOrMailContainingIgnoreCase(searchParam, searchParam, searchParam, PageRequest.of(0, 5));
+
         int idx = 0;
-        int myIdx = -1;
+        List<Integer> idToRemove = new ArrayList<>();
         for(UsernameUser username : searchResult) {
-            if(username.getUsername().equals(userData.getUsername())) {
-                myIdx = idx;
-                break;
+            if(username.getUsername().equals(userData.getUsername()) || usernameUtentiInCampionato.contains(username.getUsername())) {
+                idToRemove.add(idx);
             }
             idx++;
         }
 
-        if(myIdx != -1) {
-            searchResult.remove(myIdx);
+        for(Integer id : idToRemove) {
+            searchResult.remove(id);
         }
 
         return ResponseEntity.ok(searchResult);
