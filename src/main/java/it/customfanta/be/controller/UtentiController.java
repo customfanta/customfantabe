@@ -14,6 +14,7 @@ import it.customfanta.be.model.request.MakeLoginRequest;
 import it.customfanta.be.repository.UtentiCampionatiRepository;
 import it.customfanta.be.repository.UtentiRepository;
 import it.customfanta.be.security.MD5Security;
+import it.customfanta.be.service.FirestoreService;
 import it.customfanta.be.service.MailService;
 import it.customfanta.be.service.UtentiService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -52,6 +54,9 @@ public class UtentiController extends BaseController {
 
     @Autowired
     private HttpServletResponse httpServletResponse;
+
+    @Autowired
+    private FirestoreService firestoreService;
 
     @Operation(
             responses = {
@@ -153,7 +158,7 @@ public class UtentiController extends BaseController {
             }
     )
     @RequestMapping(method = RequestMethod.POST, value = "/create-user", produces = { "application/json" }, consumes = { "application/json"})
-    public ResponseEntity<Esito> createUser(@RequestBody CreateUserRequest createUserRequest) throws URISyntaxException {
+    public ResponseEntity<Esito> createUser(@RequestBody CreateUserRequest createUserRequest) throws URISyntaxException, ExecutionException, InterruptedException {
         logger.info("RECEIVED POST /create-user");
 
         Utente utente = new Utente();

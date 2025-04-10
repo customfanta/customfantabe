@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan("it.customfanta.be")
 @EntityScan("it.customfanta.be.model")
 @EnableJpaRepositories("it.customfanta.be.repository")
-@Import({CustomfantaBeAutoConfiguration.class, CustomfantaBeWebSocketConfiguration.class})
+@Import({CustomfantaBeAutoConfiguration.class, CustomfantaBeWebSocketConfiguration.class, FirebaseConfig.class})
 public class CustomfantaBeApplication {
 
 	public static void main(String[] args) {
