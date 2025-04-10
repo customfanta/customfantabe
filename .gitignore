@@ -119,11 +119,12 @@ local.properties
 hs_err_pid*
 
 ### Maven ###
-#target
+target
 target/classes
 target/generated-sources
 target/maven-archiver
 target/maven-status
+#/target/customfanta-be-1.0.0.jar.original
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -199,4 +200,3 @@ README.html
 .exercism
 
 /.flattened-pom.xml
-/target/customfanta-be-1.0.0.jar.original
