@@ -119,7 +119,7 @@ local.properties
 hs_err_pid*
 
 ### Maven ###
-#target/
+#target
 target/classes
 target/generated-sources
 target/maven-archiver

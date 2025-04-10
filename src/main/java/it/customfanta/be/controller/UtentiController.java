@@ -175,6 +175,7 @@ public class UtentiController extends BaseController {
         String uuidMailCertificazione = UUID.randomUUID().toString();
         utente.setUuidMailCertificazione(uuidMailCertificazione);
 
+        firestoreService.aggiungiUtente(utente);
         utentiService.saveUtente(utente);
 
         mailService.sendMail(utente.getMail(), "FantaCustom - Certifica la Mail", "Clicca il seguente link per certificare la tua mail:\nhttps://customfantabe.onrender.com/certifica-mail/"+uuidMailCertificazione);
