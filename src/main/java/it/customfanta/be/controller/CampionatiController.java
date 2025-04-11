@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
 import it.customfanta.be.model.request.AggiungiConfigurazioneCampionatoRequest;
 import it.customfanta.be.model.request.CreaCampionatoRequest;
-import it.customfanta.be.repository.ConfigurazioniCampionatiRepository;
 import it.customfanta.be.service.CampionatiService;
+import it.customfanta.be.service.ConfigurazioniCampionatiService;
 import it.customfanta.be.service.UtentiCampionatiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,7 @@ public class CampionatiController extends BaseController {
     private UtentiCampionatiService utentiCampionatiService;
 
     @Autowired
-    private ConfigurazioniCampionatiRepository configurazioniCampionatiRepository;
+    private ConfigurazioniCampionatiService configurazioniCampionatiService;
 
     @Operation(
             responses = {
@@ -164,7 +164,7 @@ public class CampionatiController extends BaseController {
     public ResponseEntity<List<ConfigurazioneCampionato>> recuperaConfigurazioniCampionato(@PathVariable("chiaveCampionato") String chiaveCampionato) {
         logger.info("RECEIVED GET /recupera-configurazioni-campionato/" + chiaveCampionato);
 
-        return ResponseEntity.ok(configurazioniCampionatiRepository.findByChiaveCampionato(chiaveCampionato));
+        return ResponseEntity.ok(configurazioniCampionatiService.findByChiaveCampionato(chiaveCampionato));
     }
 
     @Operation(
@@ -185,7 +185,7 @@ public class CampionatiController extends BaseController {
         configurazioneCampionato.setValoreConfigurazione(aggiungiConfigurazioneCampionatoRequest.getValoreConfigurazione());
         configurazioneCampionato.setChiave(String.format("%s%s", aggiungiConfigurazioneCampionatoRequest.getChiaveCampionato(), aggiungiConfigurazioneCampionatoRequest.getChiaveConfigurazione()));
 
-        configurazioniCampionatiRepository.save(configurazioneCampionato);
+        configurazioniCampionatiService.save(configurazioneCampionato);
 
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }

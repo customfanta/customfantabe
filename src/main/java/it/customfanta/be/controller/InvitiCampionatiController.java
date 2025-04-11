@@ -7,8 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
 import it.customfanta.be.model.request.InvitaUtenteRequest;
-import it.customfanta.be.repository.InvitiCampionatiRepository;
 import it.customfanta.be.service.CampionatiService;
+import it.customfanta.be.service.InvitiCampionatiService;
 import it.customfanta.be.service.UtentiCampionatiService;
 import it.customfanta.be.service.UtentiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class InvitiCampionatiController extends BaseController {
     private static final Logger logger = Logger.getLogger(InvitiCampionatiController.class.getName());
 
     @Autowired
-    private InvitiCampionatiRepository invitiCampionatiRepository;
+    private InvitiCampionatiService invitiCampionatiService;
 
     @Autowired
     private UtentiService utentiService;
@@ -65,7 +65,7 @@ public class InvitiCampionatiController extends BaseController {
             invitoCampionato.setChiaveCampionato(invitaUtenteRequest.getChiaveCampionato());
             invitoCampionato.setUsernameUtenteCheHaInvitato(userData.getUsername());
             invitoCampionato.setChiave(String.format("%s%s%s%s", userData.getUsername(), invitaUtenteRequest.getUsernameUtenteInvitato(), invitaUtenteRequest.getChiaveCampionato(), invitaUtenteRequest.getRuoloInvito()));
-            invitiCampionatiRepository.save(invitoCampionato);
+            invitiCampionatiService.save(invitoCampionato);
 
             simpMessagingTemplate.convertAndSend("/topic/nuovo-invito-ricevuto/" + invitoCampionato.getUsernameUtenteInvitato(), "NUOVO INVITO RICEVUTO");
             return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
@@ -85,7 +85,7 @@ public class InvitiCampionatiController extends BaseController {
     public ResponseEntity<List<InvitoCampionatoResponse>> readInvitiRicevuti() {
         logger.info("RECEIVED GET /read-inviti-ricevuti");
 
-        List<InvitoCampionato> findMyInvitiRicevuti = invitiCampionatiRepository.findByUsernameUtenteInvitato(userData.getUsername());
+        List<InvitoCampionato> findMyInvitiRicevuti = invitiCampionatiService.findByUsernameUtenteInvitato(userData.getUsername());
 
         List<InvitoCampionatoResponse> response = new ArrayList<>();
 
@@ -115,7 +115,7 @@ public class InvitiCampionatiController extends BaseController {
     public ResponseEntity<List<InvitoCampionatoResponse>> readInvitiInviati() {
         logger.info("RECEIVED GET /read-inviti-invitati");
 
-        List<InvitoCampionato> findMyInvitiInviati = invitiCampionatiRepository.findByUsernameUtenteCheHaInvitato(userData.getUsername());
+        List<InvitoCampionato> findMyInvitiInviati = invitiCampionatiService.findByUsernameUtenteCheHaInvitato(userData.getUsername());
 
         List<InvitoCampionatoResponse> response = new ArrayList<>();
 
@@ -145,7 +145,7 @@ public class InvitiCampionatiController extends BaseController {
     public ResponseEntity<List<InvitoCampionatoResponse>> readInvitiCampionato(@PathVariable("chiaveCampionato") String chiaveCampionato) {
         logger.info("RECEIVED GET /read-inviti-campionato/" + chiaveCampionato);
 
-        List<InvitoCampionato> findMyInvitiInviati = invitiCampionatiRepository.findByChiaveCampionato(chiaveCampionato);
+        List<InvitoCampionato> findMyInvitiInviati = invitiCampionatiService.findByChiaveCampionato(chiaveCampionato);
 
         List<InvitoCampionatoResponse> response = new ArrayList<>();
 
@@ -175,7 +175,7 @@ public class InvitiCampionatiController extends BaseController {
     public ResponseEntity<Esito> accettaInvito(@PathVariable("chiaveInvito") String chiaveInvito) {
         logger.info("RECEIVED GET /accetta-invito" + chiaveInvito);
 
-        InvitoCampionato invito = invitiCampionatiRepository.findById(chiaveInvito).get();
+        InvitoCampionato invito = invitiCampionatiService.findById(chiaveInvito);
 
         UtenteCampionato utenteCampionato = new UtenteCampionato();
         utenteCampionato.setChiave(String.format("%s%s", invito.getChiaveCampionato(), invito.getUsernameUtenteInvitato()));
@@ -184,7 +184,7 @@ public class InvitiCampionatiController extends BaseController {
         utenteCampionato.setRuoloUtente(invito.getRuoloInvito());
         utentiCampionatiService.save(utenteCampionato);
 
-        invitiCampionatiRepository.deleteById(chiaveInvito);
+        invitiCampionatiService.deleteById(chiaveInvito);
 
         simpMessagingTemplate.convertAndSend("/topic/nuovo-utente-in-campionato/" + invito.getChiaveCampionato(), "NUOVO UTENTE IN CAMPIONATO");
 
@@ -201,7 +201,7 @@ public class InvitiCampionatiController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/rifiuta-invito/{chiaveInvito}", produces = { "application/json" })
     public ResponseEntity<Esito> rifiutaInvito(@PathVariable("chiaveInvito") String chiaveInvito) {
         logger.info("RECEIVED GET /rifiuta-invito" + chiaveInvito);
-        invitiCampionatiRepository.deleteById(chiaveInvito);
+        invitiCampionatiService.deleteById(chiaveInvito);
         return ResponseEntity.ok(new Esito("OK"));
     }
 
