@@ -11,9 +11,9 @@ import it.customfanta.be.model.Utente;
 import it.customfanta.be.model.UtenteCampionato;
 import it.customfanta.be.model.request.CreateUserRequest;
 import it.customfanta.be.model.request.MakeLoginRequest;
-import it.customfanta.be.repository.UtentiCampionatiRepository;
 import it.customfanta.be.security.MD5Security;
 import it.customfanta.be.service.MailService;
+import it.customfanta.be.service.UtentiCampionatiService;
 import it.customfanta.be.service.UtentiService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class UtentiController extends BaseController {
     private UtentiService utentiService;
 
     @Autowired
-    private UtentiCampionatiRepository utentiCampionatiRepository;
+    private UtentiCampionatiService utentiCampionatiService;
 
     @Autowired
     private MailService mailService;
@@ -225,7 +225,7 @@ public class UtentiController extends BaseController {
     public ResponseEntity<List<Utente>> ricercaUtente(@PathVariable("chiaveCampionato") String chiaveCampionato, @RequestParam(value = "searchParam") String searchParam) {
         logger.info("RECEIVED GET /ricerca-utente/" + chiaveCampionato + "?searchParam=" + searchParam);
 
-        Set<String> usernameUtentiInCampionato = utentiCampionatiRepository.findByChiaveCampionato(chiaveCampionato).stream().map(UtenteCampionato::getUsernameUtente).collect(Collectors.toSet());
+        Set<String> usernameUtentiInCampionato = utentiCampionatiService.findByChiaveCampionato(chiaveCampionato).stream().map(UtenteCampionato::getUsernameUtente).collect(Collectors.toSet());
         List<Utente> searchResult = utentiService.recuperaUtentiByUsernameContainingIgnoreCaseOrNomeContainingIgnoreCaseOrMailContainingIgnoreCase(searchParam, searchParam, searchParam, userData.getUsername(), usernameUtentiInCampionato);
 
         return ResponseEntity.ok(searchResult);

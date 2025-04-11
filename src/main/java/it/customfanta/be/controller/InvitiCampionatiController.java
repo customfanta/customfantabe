@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
 import it.customfanta.be.model.request.InvitaUtenteRequest;
 import it.customfanta.be.repository.InvitiCampionatiRepository;
-import it.customfanta.be.repository.UtentiCampionatiRepository;
 import it.customfanta.be.service.CampionatiService;
+import it.customfanta.be.service.UtentiCampionatiService;
 import it.customfanta.be.service.UtentiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +38,7 @@ public class InvitiCampionatiController extends BaseController {
     private CampionatiService campionatiService;
 
     @Autowired
-    private UtentiCampionatiRepository utentiCampionatiRepository;
+    private UtentiCampionatiService utentiCampionatiService;
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -182,7 +182,7 @@ public class InvitiCampionatiController extends BaseController {
         utenteCampionato.setChiaveCampionato(invito.getChiaveCampionato());
         utenteCampionato.setUsernameUtente(invito.getUsernameUtenteInvitato());
         utenteCampionato.setRuoloUtente(invito.getRuoloInvito());
-        utentiCampionatiRepository.save(utenteCampionato);
+        utentiCampionatiService.save(utenteCampionato);
 
         invitiCampionatiRepository.deleteById(chiaveInvito);
 
