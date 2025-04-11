@@ -12,7 +12,6 @@ import it.customfanta.be.model.AzionePersonaggio;
 import it.customfanta.be.model.Esito;
 import it.customfanta.be.model.request.AddAzionePersonaggioRequest;
 import it.customfanta.be.model.request.CreateAzioneRequest;
-import it.customfanta.be.repository.AzioniRepository;
 import it.customfanta.be.service.AzioniPersonaggiService;
 import it.customfanta.be.service.AzioniService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,9 +38,6 @@ public class AzioniController extends BaseController {
 
     @Autowired
     private AzioniService azioniService;
-
-    @Autowired
-    private AzioniRepository azioniRepository;
 
     @Autowired
     private AzioniPersonaggiService azioniPersonaggiService;
@@ -113,17 +108,17 @@ public class AzioniController extends BaseController {
 
                 azioni.add(azione);
             }
-        } catch (IOException | CsvException e) {
+        } catch (IOException | CsvException ignored) {
         }
 
         if(reader != null) {
             try {
                 reader.close();
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
         }
 
-        azioniRepository.saveAll(azioni);
+        azioniService.saveAllAzione(azioni);
 
         return ResponseEntity.created(new URI("db")).body(new Esito("OK"));
     }

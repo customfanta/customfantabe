@@ -1,33 +1,46 @@
 package it.customfanta.be.service;
 
+import com.google.cloud.firestore.CollectionReference;
 import com.google.firebase.FirebaseApp;
 import it.customfanta.be.model.Azione;
-import it.customfanta.be.repository.AzioniRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class AzioniService extends BaseService {
 
-    @Autowired
-    private AzioniRepository azioniRepository;
-
     public AzioniService(FirebaseApp firebaseApp) {
         super(firebaseApp);
     }
 
-    public Azione saveAzione(Azione azione) {
-        return azioniRepository.save(azione);
+    public void saveAzione(Azione azione) {
+        getCollection().document(azione.getChiave()).set(azione);
+    }
+
+    public void saveAllAzione(List<Azione> azioni) {
+        CollectionReference collection = getCollection();
+        for(Azione azione : azioni) {
+            collection.document(azione.getChiave()).set(azione);
+        }
     }
 
     public Azione readByChiave(String chiave) {
-        return azioniRepository.findById(chiave).orElse(null);
+        try {
+            return getCollection().whereEqualTo("chiave", chiave).get().get().getDocuments().get(0).toObject(Azione.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public List<Azione> realAll(String chiaveCampionato) {
-        return azioniRepository.findByChiaveCampionato(chiaveCampionato);
+        List<Azione> azioni = new ArrayList<>();
+        try {
+            getCollection().whereEqualTo("chiaveCampionato", chiaveCampionato).get().get().getDocuments().forEach(d -> azioni.add(d.toObject(Azione.class)));
+        } catch (Exception e) {
+        }
+        return azioni;
     }
 
 }
