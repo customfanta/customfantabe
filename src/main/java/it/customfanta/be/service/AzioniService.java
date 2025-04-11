@@ -3,12 +3,14 @@ package it.customfanta.be.service;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.firebase.FirebaseApp;
 import it.customfanta.be.model.Azione;
+import it.customfanta.be.model.annotations.FirebaseTableName;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@FirebaseTableName("Azioni")
 public class AzioniService extends BaseService {
 
     public AzioniService(FirebaseApp firebaseApp) {

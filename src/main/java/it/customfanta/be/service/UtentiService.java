@@ -4,6 +4,7 @@ import com.google.cloud.firestore.Filter;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.firebase.FirebaseApp;
 import it.customfanta.be.model.Utente;
+import it.customfanta.be.model.annotations.FirebaseTableName;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@FirebaseTableName("Utenti")
 public class UtentiService extends BaseService {
 
     public UtentiService(FirebaseApp firebaseApp) {

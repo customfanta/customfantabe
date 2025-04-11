@@ -2,12 +2,14 @@ package it.customfanta.be.service;
 
 import com.google.firebase.FirebaseApp;
 import it.customfanta.be.model.Squadra;
+import it.customfanta.be.model.annotations.FirebaseTableName;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@FirebaseTableName("Squadre")
 public class SquadreService extends BaseService {
 
     public SquadreService(FirebaseApp firebaseApp) {

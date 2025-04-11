@@ -2,9 +2,11 @@ package it.customfanta.be.service;
 
 import com.google.firebase.FirebaseApp;
 import it.customfanta.be.model.Campionato;
+import it.customfanta.be.model.annotations.FirebaseTableName;
 import org.springframework.stereotype.Service;
 
 @Service
+@FirebaseTableName("Campionati")
 public class CampionatiService extends BaseService {
 
     public CampionatiService(FirebaseApp firebaseApp) {

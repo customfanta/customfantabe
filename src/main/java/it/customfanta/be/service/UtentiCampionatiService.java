@@ -3,12 +3,14 @@ package it.customfanta.be.service;
 
 import com.google.firebase.FirebaseApp;
 import it.customfanta.be.model.UtenteCampionato;
+import it.customfanta.be.model.annotations.FirebaseTableName;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@FirebaseTableName("UtentiCampionati")
 public class UtentiCampionatiService extends BaseService {
 
     public UtentiCampionatiService(FirebaseApp firebaseApp) {

@@ -1,5 +1,6 @@
 package it.customfanta.be.model;
 
+import it.customfanta.be.model.annotations.SingleRequestScope;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 

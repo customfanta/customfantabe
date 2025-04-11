@@ -1,4 +1,4 @@
-package it.customfanta.be.model;
+package it.customfanta.be.model.annotations;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
