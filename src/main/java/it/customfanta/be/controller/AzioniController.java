@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +135,7 @@ public class AzioniController extends BaseController {
     public ResponseEntity<Esito> addAzionePersonaggio(@RequestBody AddAzionePersonaggioRequest addAzionePersonaggioRequest) throws URISyntaxException {
         logger.info("RECEIVED POST /add-azione-to-personaggio");
         AzionePersonaggio azionePersonaggio = new AzionePersonaggio();
-        String dataEsecuzione = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+        String dataEsecuzione = LocalDateTime.now().atZone(ZoneId.of("Europe/Rome")).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss XXX z"));
         azionePersonaggio.setDataEsecuzione(dataEsecuzione);
         azionePersonaggio.setChiave(String.format("%s%s%s", addAzionePersonaggioRequest.getChiavePersonaggio(), addAzionePersonaggioRequest.getChiaveAzione(), dataEsecuzione));
         azionePersonaggio.setChiaveAzione(addAzionePersonaggioRequest.getChiaveAzione());
