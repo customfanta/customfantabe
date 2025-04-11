@@ -1,8 +1,8 @@
 package it.customfanta.be.service;
 
+import com.google.firebase.FirebaseApp;
 import it.customfanta.be.model.Squadra;
 import it.customfanta.be.repository.SquadreRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +11,10 @@ public class SquadreService extends BaseService {
 
     @Autowired
     private SquadreRepository squadreRepository;
+
+    public SquadreService(FirebaseApp firebaseApp) {
+        super(firebaseApp);
+    }
 
     public Squadra saveSquadra(Squadra squadra) {
         return squadreRepository.save(squadra);
@@ -22,12 +26,6 @@ public class SquadreService extends BaseService {
 
     public void deleteSquadraById(String chiave) {
         squadreRepository.deleteById(chiave);
-    }
-
-    @Transactional
-    public void dropSquadre() {
-        entityManager.createNativeQuery("DROP TABLE IF EXISTS squadre")
-                .executeUpdate();
     }
 
 }

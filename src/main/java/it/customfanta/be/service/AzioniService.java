@@ -1,8 +1,8 @@
 package it.customfanta.be.service;
 
+import com.google.firebase.FirebaseApp;
 import it.customfanta.be.model.Azione;
 import it.customfanta.be.repository.AzioniRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +14,10 @@ public class AzioniService extends BaseService {
     @Autowired
     private AzioniRepository azioniRepository;
 
+    public AzioniService(FirebaseApp firebaseApp) {
+        super(firebaseApp);
+    }
+
     public Azione saveAzione(Azione azione) {
         return azioniRepository.save(azione);
     }
@@ -24,12 +28,6 @@ public class AzioniService extends BaseService {
 
     public List<Azione> realAll(String chiaveCampionato) {
         return azioniRepository.findByChiaveCampionato(chiaveCampionato);
-    }
-
-    @Transactional
-    public void dropAzioniService() {
-        entityManager.createNativeQuery("DROP TABLE IF EXISTS azioni")
-                .executeUpdate();
     }
 
 }

@@ -1,11 +1,20 @@
 package it.customfanta.be.service;
 
-import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.Firestore;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.cloud.FirestoreClient;
 
 public abstract class BaseService {
 
-    @Autowired
-    protected EntityManager entityManager;
+    protected final Firestore firestore;
+
+    public BaseService(FirebaseApp firebaseApp) {
+        this.firestore = FirestoreClient.getFirestore(firebaseApp);
+    }
+
+    protected CollectionReference getCollection() {
+        return firestore.collection(this.getClass().getSimpleName());
+    }
 
 }
