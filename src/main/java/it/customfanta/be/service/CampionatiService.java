@@ -2,30 +2,32 @@ package it.customfanta.be.service;
 
 import com.google.firebase.FirebaseApp;
 import it.customfanta.be.model.Campionato;
-import it.customfanta.be.repository.CampionatiRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CampionatiService extends BaseService {
-
-    @Autowired
-    private CampionatiRepository campionatiRepository;
 
     public CampionatiService(FirebaseApp firebaseApp) {
         super(firebaseApp);
     }
 
     public Campionato findByChiave(String chiave) {
-        return campionatiRepository.findById(chiave).orElse(null);
+        try {
+            return getCollection().whereEqualTo("chiave", chiave).get().get().getDocuments().get(0).toObject(Campionato.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void save(Campionato campionato) {
-        campionatiRepository.save(campionato);
+        getCollection().document(campionato.getChiave()).set(campionato);
     }
 
     public void deleteByChiave(String chiave) {
-        campionatiRepository.deleteById(chiave);
+        try {
+            getCollection().document(chiave).delete().get();
+        } catch (Exception ignored) {
+        }
     }
 
 }

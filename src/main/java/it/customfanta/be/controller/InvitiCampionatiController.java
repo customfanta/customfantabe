@@ -7,9 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
 import it.customfanta.be.model.request.InvitaUtenteRequest;
-import it.customfanta.be.repository.CampionatiRepository;
 import it.customfanta.be.repository.InvitiCampionatiRepository;
 import it.customfanta.be.repository.UtentiCampionatiRepository;
+import it.customfanta.be.service.CampionatiService;
 import it.customfanta.be.service.UtentiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +35,7 @@ public class InvitiCampionatiController extends BaseController {
     private UtentiService utentiService;
 
     @Autowired
-    private CampionatiRepository campionatiRepository;
+    private CampionatiService campionatiService;
 
     @Autowired
     private UtentiCampionatiRepository utentiCampionatiRepository;
@@ -93,7 +93,7 @@ public class InvitiCampionatiController extends BaseController {
             InvitoCampionatoResponse invitoCampionatoResponse = new InvitoCampionatoResponse();
 
             invitoCampionatoResponse.setChiave(invitoCampionato.getChiave());
-            invitoCampionatoResponse.setCampionato(campionatiRepository.findById(invitoCampionato.getChiaveCampionato()).get());
+            invitoCampionatoResponse.setCampionato(campionatiService.findByChiave(invitoCampionato.getChiaveCampionato()));
             invitoCampionatoResponse.setUsernameUtenteInvitato(invitoCampionato.getUsernameUtenteInvitato());
             invitoCampionatoResponse.setUsernameUtenteCheHaInvitato(invitoCampionato.getUsernameUtenteCheHaInvitato());
             invitoCampionatoResponse.setRuoloInvito(invitoCampionato.getRuoloInvito());
@@ -123,7 +123,7 @@ public class InvitiCampionatiController extends BaseController {
             InvitoCampionatoResponse invitoCampionatoResponse = new InvitoCampionatoResponse();
 
             invitoCampionatoResponse.setChiave(invitoCampionato.getChiave());
-            invitoCampionatoResponse.setCampionato(campionatiRepository.findById(invitoCampionato.getChiaveCampionato()).get());
+            invitoCampionatoResponse.setCampionato(campionatiService.findByChiave(invitoCampionato.getChiaveCampionato()));
             invitoCampionatoResponse.setUsernameUtenteInvitato(invitoCampionato.getUsernameUtenteInvitato());
             invitoCampionatoResponse.setUsernameUtenteCheHaInvitato(invitoCampionato.getUsernameUtenteCheHaInvitato());
             invitoCampionatoResponse.setRuoloInvito(invitoCampionato.getRuoloInvito());
