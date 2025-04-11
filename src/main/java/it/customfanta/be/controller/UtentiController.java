@@ -1,6 +1,6 @@
 package it.customfanta.be.controller;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Jwts;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,14 +12,11 @@ import it.customfanta.be.model.UtenteCampionato;
 import it.customfanta.be.model.request.CreateUserRequest;
 import it.customfanta.be.model.request.MakeLoginRequest;
 import it.customfanta.be.repository.UtentiCampionatiRepository;
-import it.customfanta.be.repository.UtentiRepository;
 import it.customfanta.be.security.MD5Security;
-import it.customfanta.be.service.FirestoreService;
 import it.customfanta.be.service.MailService;
 import it.customfanta.be.service.UtentiService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +26,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -44,9 +44,6 @@ public class UtentiController extends BaseController {
     private UtentiService utentiService;
 
     @Autowired
-    private UtentiRepository utentiRepository;
-
-    @Autowired
     private UtentiCampionatiRepository utentiCampionatiRepository;
 
     @Autowired
@@ -54,9 +51,6 @@ public class UtentiController extends BaseController {
 
     @Autowired
     private HttpServletResponse httpServletResponse;
-
-    @Autowired
-    private FirestoreService firestoreService;
 
     @Operation(
             responses = {
@@ -97,7 +91,7 @@ public class UtentiController extends BaseController {
         search.setMail(utenteLogin.getUsernameMail());
         search.setUsername(utenteLogin.getUsernameMail());
 
-        Utente utente = utentiService.findUtente(search);
+        Utente utente = utentiService.recuperaUtenteByUsernameOrMail(search);
         if(utente != null) {
             if(MD5Security.getMD5Pass(utenteLogin.getPassword()).equals(utente.getPassword())) {
                 utente.setPassword(null);
@@ -165,7 +159,7 @@ public class UtentiController extends BaseController {
         utente.setUsername(createUserRequest.getUsername());
         utente.setNome(createUserRequest.getNome());
         utente.setMail(createUserRequest.getMail());
-        if(utentiService.findUtente(utente) != null) {
+        if(utentiService.recuperaUtenteByUsernameOrMail(utente) != null) {
             return ResponseEntity.badRequest().build();
         }
         utente.setPassword(MD5Security.getMD5Pass(createUserRequest.getPassword()));
@@ -175,8 +169,7 @@ public class UtentiController extends BaseController {
         String uuidMailCertificazione = UUID.randomUUID().toString();
         utente.setUuidMailCertificazione(uuidMailCertificazione);
 
-        firestoreService.aggiungiUtente(utente);
-        utentiService.saveUtente(utente);
+        utentiService.aggiungiUtente(utente);
 
         mailService.sendMail(utente.getMail(), "FantaCustom - Certifica la Mail", "Clicca il seguente link per certificare la tua mail:\nhttps://customfantabe.onrender.com/certifica-mail/"+uuidMailCertificazione);
 
@@ -209,11 +202,11 @@ public class UtentiController extends BaseController {
     public RedirectView certificaMail(@PathVariable("uuidMailCertificazione") String uuidMailCertificazione) {
         logger.info("RECEIVED GET /certifica-mail/"+uuidMailCertificazione);
 
-        Utente utente = utentiService.findUtenteByUUIDMail(uuidMailCertificazione);
+        Utente utente = utentiService.recuperaUtenteByUuidMailCertificazione(uuidMailCertificazione);
         if(utente != null) {
             utente.setUuidMailCertificazione(null);
             utente.setMailCertificata(true);
-            utentiService.saveUtente(utente);
+            utentiService.aggiungiUtente(utente);
         } else {
             return new RedirectView("https://customfanta.github.io/certifica-mail-ko.html");
         }
@@ -224,29 +217,16 @@ public class UtentiController extends BaseController {
     @Operation(
             responses = {
                     @ApiResponse(responseCode = "200", content = {
-                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UsernameUser.class)))
+                            @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Utente.class)))
                     })
             }
     )
     @RequestMapping(method = RequestMethod.GET, value = "/ricerca-utente/{chiaveCampionato}", produces = { "application/json" })
-    public ResponseEntity<List<UsernameUser>> ricercaUtente(@PathVariable("chiaveCampionato") String chiaveCampionato, @RequestParam(value = "searchParam") String searchParam) {
+    public ResponseEntity<List<Utente>> ricercaUtente(@PathVariable("chiaveCampionato") String chiaveCampionato, @RequestParam(value = "searchParam") String searchParam) {
         logger.info("RECEIVED GET /ricerca-utente/" + chiaveCampionato + "?searchParam=" + searchParam);
 
         Set<String> usernameUtentiInCampionato = utentiCampionatiRepository.findByChiaveCampionato(chiaveCampionato).stream().map(UtenteCampionato::getUsernameUtente).collect(Collectors.toSet());
-        List<UsernameUser> searchResult = utentiRepository.findByUsernameContainingIgnoreCaseOrNomeContainingIgnoreCaseOrMailContainingIgnoreCase(searchParam, searchParam, searchParam, PageRequest.of(0, 5));
-
-        int idx = 0;
-        List<Integer> idToRemove = new ArrayList<>();
-        for(UsernameUser username : searchResult) {
-            if(username.getUsername().equals(userData.getUsername()) || usernameUtentiInCampionato.contains(username.getUsername())) {
-                idToRemove.add(idx);
-            }
-            idx++;
-        }
-
-        for(Integer id : idToRemove) {
-            searchResult.remove(id);
-        }
+        List<Utente> searchResult = utentiService.recuperaUtentiByUsernameContainingIgnoreCaseOrNomeContainingIgnoreCaseOrMailContainingIgnoreCase(searchParam, searchParam, searchParam, userData.getUsername(), usernameUtentiInCampionato);
 
         return ResponseEntity.ok(searchResult);
     }

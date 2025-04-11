@@ -10,7 +10,7 @@ import it.customfanta.be.model.request.InvitaUtenteRequest;
 import it.customfanta.be.repository.CampionatiRepository;
 import it.customfanta.be.repository.InvitiCampionatiRepository;
 import it.customfanta.be.repository.UtentiCampionatiRepository;
-import it.customfanta.be.repository.UtentiRepository;
+import it.customfanta.be.service.UtentiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,7 +20,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 @RestController
@@ -33,7 +32,7 @@ public class InvitiCampionatiController extends BaseController {
     private InvitiCampionatiRepository invitiCampionatiRepository;
 
     @Autowired
-    private UtentiRepository utentiRepository;
+    private UtentiService utentiService;
 
     @Autowired
     private CampionatiRepository campionatiRepository;
@@ -55,9 +54,10 @@ public class InvitiCampionatiController extends BaseController {
     public ResponseEntity<Esito> invitaUtente(@RequestBody InvitaUtenteRequest invitaUtenteRequest) throws URISyntaxException {
         logger.info("RECEIVED POST /invita-utente");
 
-        Optional<Utente> utenteInvitato = utentiRepository.findByUsername(invitaUtenteRequest.getUsernameUtenteInvitato());
 
-        if(utenteInvitato.isPresent()) {
+        Utente utenteInvitato = utentiService.recuperaUtente(invitaUtenteRequest.getUsernameUtenteInvitato());
+
+        if(utenteInvitato != null) {
             InvitoCampionato invitoCampionato = new InvitoCampionato();
 
             invitoCampionato.setUsernameUtenteInvitato(invitaUtenteRequest.getUsernameUtenteInvitato());

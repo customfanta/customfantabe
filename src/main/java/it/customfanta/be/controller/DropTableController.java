@@ -39,9 +39,6 @@ public class DropTableController extends BaseController {
     private SquadreService squadreService;
 
     @Autowired
-    private UtentiService utentiService;
-
-    @Autowired
     private CampionatiService campionatiService;
 
     @Autowired
@@ -79,13 +76,6 @@ public class DropTableController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/drop-squadre", produces = { "application/json" })
     public ResponseEntity<Esito> dropSquadre() {
         squadreService.dropSquadre();
-        return ResponseEntity.ok(new Esito("OK"));
-    }
-
-    @Operation(responses = {@ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Esito.class))})})
-    @RequestMapping(method = RequestMethod.GET, value = "/drop-utenti", produces = { "application/json" })
-    public ResponseEntity<Esito> dropUtenti() {
-        utentiService.dropTable();
         return ResponseEntity.ok(new Esito("OK"));
     }
 
