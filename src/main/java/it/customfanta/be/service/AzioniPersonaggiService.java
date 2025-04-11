@@ -17,7 +17,7 @@ public class AzioniPersonaggiService extends BaseService {
     }
 
     public void saveAzionePersonaggio(AzionePersonaggio azionePersonaggio) {
-        getCollection().document(azionePersonaggio.getChiaveAzione()).set(azionePersonaggio);
+        getCollection().document(azionePersonaggio.getChiave()).set(azionePersonaggio);
     }
 
     public List<AzionePersonaggio> readByChiavePersonaggio(String chiavePersonaggio) {
