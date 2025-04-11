@@ -2,30 +2,44 @@ package it.customfanta.be.service;
 
 import com.google.firebase.FirebaseApp;
 import it.customfanta.be.model.Squadra;
-import it.customfanta.be.repository.SquadreRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SquadreService extends BaseService {
-
-    @Autowired
-    private SquadreRepository squadreRepository;
 
     public SquadreService(FirebaseApp firebaseApp) {
         super(firebaseApp);
     }
 
-    public Squadra saveSquadra(Squadra squadra) {
-        return squadreRepository.save(squadra);
+    public void saveSquadra(Squadra squadra) {
+        getCollection().document(squadra.getChiave()).set(squadra);
+    }
+
+    public List<Squadra> findByChiaveCampionato(String chiaveCampionato) {
+        List<Squadra> squadre = new ArrayList<>();
+        try {
+            getCollection().whereEqualTo("chiaveCampionato", chiaveCampionato).get().get().getDocuments().forEach(d -> squadre.add(d.toObject(Squadra.class)));
+        } catch (Exception e) {
+        }
+        return squadre;
     }
 
     public Squadra readSquadraByUtente(String usernameUtente, String chiaveCampionato) {
-        return squadreRepository.findByUsernameUtenteAndChiaveCampionato(usernameUtente, chiaveCampionato).orElse(null);
+        try {
+            return getCollection().whereEqualTo("usernameUtente", usernameUtente).whereEqualTo("chiaveCampionato", chiaveCampionato).get().get().getDocuments().get(0).toObject(Squadra.class);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void deleteSquadraById(String chiave) {
-        squadreRepository.deleteById(chiave);
+        try {
+            getCollection().document(chiave).delete().get();
+        } catch (Exception ignored) {
+        }
     }
 
 }

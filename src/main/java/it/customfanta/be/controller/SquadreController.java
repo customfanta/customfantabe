@@ -7,12 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import it.customfanta.be.model.*;
 import it.customfanta.be.model.request.SquadraRequest;
-import it.customfanta.be.repository.PersonaggiRepository;
-import it.customfanta.be.repository.SquadreRepository;
-import it.customfanta.be.service.AzioniPersonaggiService;
-import it.customfanta.be.service.AzioniService;
-import it.customfanta.be.service.SquadrePersonaggiService;
-import it.customfanta.be.service.SquadreService;
+import it.customfanta.be.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -34,9 +28,6 @@ public class SquadreController extends BaseController {
     private SquadreService squadreService;
 
     @Autowired
-    private SquadreRepository squadreRepository;
-
-    @Autowired
     private SquadrePersonaggiService squadrePersonaggiService;
 
     @Autowired
@@ -46,7 +37,7 @@ public class SquadreController extends BaseController {
     private AzioniService azioniService;
 
     @Autowired
-    private PersonaggiRepository personaggiRepository;
+    private PersonaggiService personaggiService;
 
     @Operation(
             responses = {
@@ -107,7 +98,7 @@ public class SquadreController extends BaseController {
         for(SquadraPersonaggio squadraPersonaggio : squadraPersonaggi) {
             PersonaggioResponse personaggioResponse = new PersonaggioResponse();
 
-            personaggioResponse.setNomePersonaggio(personaggiRepository.findById(squadraPersonaggio.getChiavePersonaggio()).get().getNominativo());
+            personaggioResponse.setNomePersonaggio(personaggiService.readByChiave(squadraPersonaggio.getChiavePersonaggio()).getNominativo());
 
             List<AzionePersonaggio> azioniPersonaggi = azioniPersonaggiService.readByChiavePersonaggio(squadraPersonaggio.getChiavePersonaggio());
             int punteggioPersonaggio = 0;
@@ -164,7 +155,7 @@ public class SquadreController extends BaseController {
     public ResponseEntity<List<ReadSquadraResponse>> recuperaSquadreCampionato(@PathVariable("chiaveCampionato") String chiaveCampionato) {
         logger.info("RECEIVED GET /recupera-squadre-campionato/" + chiaveCampionato);
 
-        List<Squadra> squadre = squadreRepository.findByChiaveCampionato(chiaveCampionato);
+        List<Squadra> squadre = squadreService.findByChiaveCampionato(chiaveCampionato);
 
         List<ReadSquadraResponse> response = new ArrayList<>();
         for(Squadra squadra : squadre) {
@@ -183,7 +174,7 @@ public class SquadreController extends BaseController {
             for (SquadraPersonaggio squadraPersonaggio : squadraPersonaggi) {
                 PersonaggioResponse personaggioResponse = new PersonaggioResponse();
 
-                personaggioResponse.setNomePersonaggio(personaggiRepository.findById(squadraPersonaggio.getChiavePersonaggio()).get().getNominativo());
+                personaggioResponse.setNomePersonaggio(personaggiService.readByChiave(squadraPersonaggio.getChiavePersonaggio()).getNominativo());
 
                 List<AzionePersonaggio> azioniPersonaggi = azioniPersonaggiService.readByChiavePersonaggio(squadraPersonaggio.getChiavePersonaggio());
                 int punteggioPersonaggio = 0;
