@@ -135,9 +135,10 @@ public class AzioniController extends BaseController {
     public ResponseEntity<Esito> addAzionePersonaggio(@RequestBody AddAzionePersonaggioRequest addAzionePersonaggioRequest) throws URISyntaxException {
         logger.info("RECEIVED POST /add-azione-to-personaggio");
         AzionePersonaggio azionePersonaggio = new AzionePersonaggio();
-        String dataEsecuzione = ZonedDateTime.now(ZoneId.of("Europe/Rome")).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss XXX z"));
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Europe/Rome"));
+        String dataEsecuzione = now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss XXX z"));
         azionePersonaggio.setDataEsecuzione(dataEsecuzione);
-        azionePersonaggio.setChiave(String.format("%s%s%s", addAzionePersonaggioRequest.getChiavePersonaggio(), addAzionePersonaggioRequest.getChiaveAzione(), dataEsecuzione));
+        azionePersonaggio.setChiave(String.format("%s%s%d", addAzionePersonaggioRequest.getChiavePersonaggio(), addAzionePersonaggioRequest.getChiaveAzione(), System.currentTimeMillis()));
         azionePersonaggio.setChiaveAzione(addAzionePersonaggioRequest.getChiaveAzione());
         azionePersonaggio.setChiavePersonaggio(addAzionePersonaggioRequest.getChiavePersonaggio());
         azioniPersonaggiService.saveAzionePersonaggio(azionePersonaggio);
