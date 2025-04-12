@@ -28,7 +28,7 @@ public class CustomfantaBeAutoConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://customfanta.github.io")
+                .allowedOrigins("https://customfanta.github.io", "https://customfantabe.web.app")
                 .allowCredentials(true)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }

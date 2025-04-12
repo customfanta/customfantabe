@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = {"https://customfanta.github.io"}, allowCredentials = "true", allowedHeaders = "*")
+@CrossOrigin(origins = {"https://customfanta.github.io", "https://customfantabe.web.app"}, allowCredentials = "true", allowedHeaders = "*")
 public class UtentiController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(UtentiController.class.getName());
